@@ -1,0 +1,1571 @@
+\documentclass{article}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{esvect}
+\usepackage[shortlabels]{enumitem}
+\usepackage{ctable}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage[caption=false]{subfig}
+\usepackage{mlmath}
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\bl}[1]{{\color{blue}#1}}
+\newcommand{\pl}[1]{{\color{purple}#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% \NewDocumentCommand{\tens}{t_}
+%  {%
+%   \IfBooleanTF{#1}
+%   {\tensop}
+%   {\otimes}%
+%  }
+% \NewDocumentCommand{\tensop}{m}
+%  {%
+%   \mathbin{\mathop{\otimes}\displaylimits_{#1}}%
+%  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title{Phase diagram for two-layer ReLU neural networks at infinite-width limit}
+\author{}
+
+\maketitle
+%\date{\today}
+\begin{abstract}
+    Without a unified framework, it remains unclear how deep neural networks~(DNNs) with different hyperparameters present various behaviors during the gradient based training,  except for particular examples, e.g., some random feature~(RF) like models and the mean-field model, studied in literature. In this work, we show the first unified phase diagram underlying for two-layer neural network with rectified linear units~(ReLU NN) at infinite-width limit. With both experiment and theory, we identify three distinctive dynamical regimes, i.e., \emph{linear} regime, \emph{critical} regime and \emph{condensed} regime, in which the relative change of input weights tends to $0$, $O(1)$ and $\infty$, respectively. In the linear regime, NN training dynamics can be linearized around initialization similar to a random feature model. Empirically, we further show that, in the condensed regime, input weights are condensed at several discrete angles. The above two regimes are separated by the critical regime, in which the mean-field model as a typical example, is a well-studied. This work initiates a step towards understanding NNs by studying characteristics of each regime in a phase diagram.
+\end{abstract}
+
+\section{Introduction}
+
+It has been widely observed that, given training data, neural networks~(NNs) may exhibit distinctive dynamical behaviors during the training depending on the choices of hyperparameters, e.g., layer width, initial variance, scaling factor, etc. As an example, we consider a two-layer NN with $m$ hidden neurons
+\begin{equation}\label{eq: 2LNN}
+    f^{\alpha}_{\vtheta}(\vx) = \frac{1}{\alpha}\sum_{k=1}^{m}a_k\sigma(\vw_k^{\T}\vx),
+\end{equation}
+where $\vx\in\sR^{d}$, $1/\alpha$ is the pre-factor \textcolor{red}{(scaling factor or pre-factor)}, $\vtheta=\mathrm{vec}(\{a_k,\vw_k\}_{k=1}^{m})$ is the set of parameters with initialization $a_k^0\sim N(0, \beta_1^2)$, $\vw_k^0\sim N(0, \beta_2^2 \mI_d)$. Here we incorporate the bias $b_k$ into $\vw_k$ by setting $b_k:=(\vw_k)_d$ and $(\vx)_d=1$. At the infinite-width $m\to\infty$ limit, considering $\beta_{1}=\beta_{2}=1$, with $\alpha\sim\sqrt{m}$ ($m$ is the width of hidden layer), we arrive at the neural tangent kernel~(NTK) regime where the gradient flow of NN can be linearized around initialization~\cite{jacot_neural_2018,arora2019exact,zhang_type_2019}, whereas with $\alpha\sim m$, we arrive at the mean-field regime where gradient flow of NN exhibits highly nonlinear dynamics~\cite{mei_mean_2018,rotskoff_parameters_2018,chizat_global_2018,sirignano_mean_2020}. In addition, it has been proved that Xavier initialization ($\alpha=1$, $\beta_{1}=1/\sqrt{m}$, $\beta_{2}=1$) also yields a linear training dynamics~\cite{ma2020quenching} at infinite-width limit. The current situation of NN study is similar to an early era of thermodynamics, when we observe different states of matters at several discrete conditions without realizing the existence of a unified phase diagram underlying.
+
+In this work, we present the first phase diagram for the two-layer neural network with  rectified linear units~(ReLU NN). To this end, two difficulties need to be overcomed. The first difficulty is that one can not identify the sharply distinctive regimes/states with finite neurons (in practical) as required for a phase diagram. This situation is similar to the analysis of a thermodynamic system, e.g., ising model, where phase transition can not happen at a finite volume. Therefore, in analogy to the thermodynamic limit, we take $m\to\infty$ limit as our starting point and successfully identify three distinctive dynamical regimes of NNs, i.e., \emph{linear} regime, \emph{critical} regime and \emph{condensed} regime. In the linear regime, $\vw$ almost does not change and NN training dynamics can be linearized around initialization similar to a NTK or random feature model. In the condensed regime, relative change of $\vw$ tends to infinity and is condensed at several discrete angles. In the critical regime, which serves as the boundary between above two regimes, relative change of $\vw$ is always $O(1)$ similar to the mean field model. The second difficulty is the identification of phase diagram coordinates. For the vanilla gradient flow training dynamics of NN in Eq.~\eqref{eq: 2LNN}, there are three tunable hpyerparameters $\alpha$, $\beta_1$ and $\beta_2$, which in general are functions of $m$. However, through appropriate normalization of gradient flow dynamics, which accounts for the dynamical similarity up to a time scaling, we arrive at two independent coordinates 
+\begin{equation}
+    \gamma=\lim\limits_{m\to\infty}-\frac{\log\beta_1\beta_2/\alpha}{\log m}, \quad \gamma'=\lim\limits_{m\to\infty}-\frac{\log\beta_1/\beta_2}{\log m}.
+\end{equation}
+The resulting phase diagram is shown in Fig.~\ref{fig:phase-diagram}. Examples studied in previous literature also marked, for example, in~\cite{e2020comparative}, they study NNs with settings on the red dashed line.
+
+This phase diagram is obtained through a combination of experimental and theoretical approaches. Experimentally, for a specific $1$-d fitting problem, we demonstrate that relative change of $\vw$ tends to $0$, $O(1)$ and $\infty$ at linear, critical and condensed regime, respectively, as $m\to\infty$. Moreover, we show that the distribution of $\vtheta$ in the condensed regime after training indeed tends to be more and more condensed as $m\to\infty$ opposite to the linear and critical regimes. Theoretically, we prove that, in the linear regime of the phase diagram, the relative change of $\vw$ tends to $0$ as $m\to\infty$.
+
+Our work is a first step towards a systematical effort in drawing the phase diagrams for different NNs. With the guidance of these phase diagrams, detailed experimental and theoretical works can be done to further characterize the dynamical behavior and the corresponding implicit regularization effect at each of the identified regime. As a consequence, the black box of NN can be gradually opened, and the research of NN will become more a science than an alchemy.
+
+%characteristics of different regimes are briefly described as follows. In the linear regime, NN learning behaves like a NTK or a random feature as $m\to \infty$. We further prove that in this linear regime, two-layer NNs find the global optima exponentially fast. In the non-linear regime,  the active neurons condense at finite orientations as the network size approaches infinity, i.e., the width of condensed orientations shrink and their amplitude increases as $m\to\infty$.
+%It is a unversal phenomenon that, given training data, an overparametrized NN can learn different functions (all are global minimizers) depending on our selection of hyperparameters, giving rise to different generalization performance as observed in experiments. However, it is not clear about the key features of these learned functions. 
+
+%The first question we can ask is what is the universal property that makes most of them not to overfit? Empirical studies suggested that DNNs may learn simple patterns first~\cite{arpit2017closer,kalimeris_sgd_2019,valle2018deep}. More quantitatively, in~\cite{xu_training_2019,xu_frequency_2019,rahaman_spectral_2019} they demonstrate a general phenomenon of frequency principle---NNs often learn low frequencies first. As unraveled in~\cite{zhang2019explicitizing}, the frequency principle dynamics leads to a low frequency fitting of training data, which is the general property that helps avoid overfitting.
+
+%The second question is what makes some of them generalize better than others? A conceptual answer is, depending on the selection of hyperparameters, the NN training dynamics may exhibit distinctive behaviors, leading to different inductive biases in these learned functions. In this paper, we systematically characterize these distinctive behaviors for the two-layer ReLU NN summarized in phase diagram.
+
+
+
+
+
+
+%Deep learning, an important method of modern machine learning, is often realized by a deep neural neural network (DNN), which has universal approximation ability for any continuous function at the infinite width limit~\cite{cybenko1989approximation}. 
+
+%To understand the success~\cite{lecun_deep_2015} or failure~\cite{nye2018efficient} of deep learning, it calls for understanding DNNs with gradient-based training. Recent years, among many, we list two approaches that have gained much understanding to this aspect.
+
+%One approach is from the perspective of macroscopic level of the DNN output. Empirical studies suggested that DNNs may learn simple patterns first~\cite{arpit2017closer,kalimeris_sgd_2019,valle2018deep}. More quantitatively, in~\cite{xu_training_2019,xu_frequency_2019,rahaman_spectral_2019} they demonstrate a general phenomenon of frequency principle---NNs often learn low frequencies first. Further more, in~\cite{zhang2019explicitizing,basri2019convergence,yang_fine-grained_2020,cao_towards_2020} they study this frequency principle quantitatively with NTK and reveal interesting properties of the NNs. For example, in~\cite{zhang2019explicitizing} they explicitly show the convergence of difference frequency and with different parameter initialization, the NN interpolate training data in a way varying from a linear interpolation to a cubic spline. Therefore, studying DNN in the macroscopic level is closely related to studying different parameter regimes, which is the other common approach.
+
+%With different pre-factors or different initialization of parameters, many studies probe various behaviors of DNNs. 
+
+%Consider a two-layer neural network (NN) with $m$ hidden neurons and input $\vx$
+%\begin{equation}\label{eq: 2LNN}
+%    f^{\alpha}_{\vtheta}(\vx) = \frac{1}{\alpha}\sum_{k=1}^{m}a_k\sigma(\vw_k^{\T}\vx),
+%\end{equation}
+%where $\frac{1}{\alpha}$ is the pre-factor, $\vtheta=\{(a_k,\vw_k)\}_{k=1}^{m}$ is the set of parameters. In practical training, good generalization results can often be achieved by taking the pre-factor as $1$ and initializing parameters by some common methods, such as Xavier initialization [cite] or LeCun initialization [cite]. Theoretical studies also use various settings for NNs. Initializing parameters with standard Gaussian distribution, for example, two research lines focus on the properties of NN with two particular pre-factors. In the first example of $\alpha=\sqrt{m}$, all parameters at well training state are closer to the their respective initialization as network size go wider, that is, in the infinite wide limit, the training behavior of NNs is characterized by a neural tangent kernel (NTK)~\cite{jacot_neural_2018,arora2019exact,zhang_type_2019}. For the other example of  $\alpha=m$, i.e., a mean-field regime~\cite{mei_mean_2018,rotskoff_parameters_2018,chizat_global_2018,sirignano_mean_2020}, parameters have significant change during the training and the training of NNs shows non-linearity w.r.t.\  parameters. In addition to these two examples, \cite{e2020comparative} show that with $\alpha=1$ and initializing $a_k$ by $O(1/m^{\beta_1})\textcolor{red}{?}$, the training behavior of NNs is close to a random feature model uniformly in the training process, and~\cite{chizat2018note} show that as the prefactor $\alpha$ varies from large to small values, the NNs experience from a lazy training (parameters after training close to initialization) to a non-lazy training. Although many NNs with particular settings are explored, there are no study on exploring the regime classifying of NNs with different settings based on their similarity and distinct behaviors. The advantage of a clear regime classification would simplify the study of DNNs and leads to a complete picture understanding of DNNs.
+
+%Different combinations among the pre-factor and parameter initialization may lead to a same regime or different regimes. Therefore, it is natural to ask the following questions:
+%\begin{enumerate}
+%    \item How to effectively and uniquely classify different parameter regimes?
+%    \item What are the characteristics of different regimes?
+%\end{enumerate}
+%In this work, we take an initial step towards answering above question through empirical and theoretical study for two-layer wide ReLU NNs. For the first problem, we propose a nondimensionalized model for model ~\eqref{eq: 2LNN}, through which we show two regime indexes (denoted by $\gamma$ and $\gamma^{\prime}$, defined in later sections) effectively characterize the training behavior of NNs with GD training, thus,  effectively and uniquely classifying different parameter regimes. As shown in Fig.~\ref{fig:phase-diagram}, the whole regime can be separated into a linear regime and a condensed regime by a line of the critical regime. The key quantity to identify the non-linear regime is based on the large deviation of input weights $\vw$ from its initialization, which is inside the non-linear activation function. It is clear to see that the LeCun initialzation, Xavier intitialization, structures studied in~\cite{jacot_neural_2018,e2020comparative} all falls in the linear regime, and the mean field limit case in the critical regime~\cite{mei_mean_2018,rotskoff_parameters_2018,chizat_global_2018,sirignano_mean_2020}. [THIS ACTUALLY is not consistent with practical learning. If the linear regime is not useful, how to say about the common initialization? Why do we care about a regime no one ever studied or even used? Or just said infinite width is not useful for understanding?]
+
+%For the second problem, characteristics of different regimes are briefly described as follows. In the linear regime, NN learning behaves like a NTK or a random feature as $m\to \infty$. We further prove that in this linear regime, two-layer NNs find the global optima exponentially fast. In the non-linear regime,  the active neurons condense at finite orientations as the network size approaches infinity, i.e., the width of condensed orientations shrink and their amplitude increases as $m\to\infty$.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{pic/fig-phase-diagram}
+    \caption{Phase diagram. NTK, $\gamma'$ should be revised. Also NEED to discuss where E et al.}
+    \label{fig:phase-diagram}
+\end{figure}
+
+\section{Related works}
+In~\cite{ma2020quenching} they study two-layer NN with Xavier-like initialization in the under-parameterized and mildly over-parameterized regimes. They find that the NN experiences two phases during a gradient descent~(GD) training: In the early phase, neurons are quenched and the NN behaves like a random feature model, followed by a late phase where only a few neurons are activated. This two-phase training undergoes a transition to a random feature like behavior when the NN goes into a mildly over-parameterized regime.  Our results is consistent with the finding in~\cite{ma2020quenching}. The Xavier initialization with no pre-factor falls into the linear regime of overparamterized NNs, that is, a random feature like behavior.
+
+In~\cite{maennel2018gradient} they study the two-layer ReLU NNs and find that when the initialization of parameters goes towards zero, a quantization effect emerges, that is, the weight vectors tend to concentrate at a small number of directions determined by the input data. This phenomenon is consistent with an extreme case of the condensed regime.
+
+The perspective of studying NNs from macroscopic level of the NN output is also closely related to studying different parameter regimes. Empirical studies suggested that DNNs may learn simple patterns first~\cite{arpit2017closer,kalimeris_sgd_2019,valle2018deep}. More quantitatively, in~\cite{xu_training_2019,xu_frequency_2019,rahaman_spectral_2019} they demonstrate a general phenomenon of frequency principle---NNs often learn low frequencies first. Further more, in~\cite{zhang2019explicitizing,basri2019convergence,yang_fine-grained_2020,cao_towards_2020} they study this frequency principle quantitatively with NTK and reveal interesting properties of the NNs. For example, in~\cite{zhang2019explicitizing} they explicitly show the convergence of different frequency and with different parameter initializations, the NN interpolates training data in a way varying from a linear interpolation to a cubic spline. Therefore, studying DNNs in the macroscopic level is closely related to studying different parameter regimes.
+
+\section{Rescaling and the normalized model}\label{sec..Rescaling}
+Identification of the coordinates is important for drawing the phase diagram. Unlike in thermodynamics where temperature and pressure are natural choices, for NNs, it is not obvious which quantities of hyperparameters are key to the regime separation. However, there are some guiding principles for finding the coordinates of a phase diagram at $m\to\infty$:
+\begin{enumerate}[(i)]
+    \item They should be effectively independent.
+    \item Given a specific coordinate in the phase diagram, the learning dynamics of all the corresponding NNs statistically should be the same up to a time scaling, implying that statistically they learn the same function after training.
+    \item They should be able to differentiate dynamical differences except for the time scaling.
+\end{enumerate}
+
+Guided by above principles, in this section, we perform the following rescaling procedure for a fair comparison between different choices of hyperparameters and obtain a normalized model with two independent quantities irrespective of the time scaling of the gradient flow dynamics.
+%which we name it as, in contrast to the original model~\eqref{eq: 2LNN}, the \emph{normalized} model. 
+We start with the original model~\eqref{eq: 2LNN}
+\begin{equation}
+    f^{\alpha}_{\vtheta}(\vx) = \frac{1}{\alpha}\sum_{k=1}^{m}a_k\sigma(\vw_k^{\T}\vx),
+\end{equation}
+defined on a given sample set $S=\{(\vx_i,y_i)\}_{i=1}^n$ where $\vx_i\in\sR^d$, $i\in[n]$, network width $m$ and a scaling parameter $1/\alpha$ and $\sigma=\ReLU$. The initialization of parameters are
+\begin{equation}
+    a_k^0\sim N(0, \beta_1^2), \quad \vw_k^0\sim N(0, \beta_2^2 \mI_d),
+\end{equation}
+where separate $a_k$ and $\vw_k$ into to different scales $\beta_1$ and $\beta_2$. The empirical risk is as follows
+\begin{equation}
+    \RS(\vtheta)=\frac{1}{2n}\sum_{i=1}^n {(f^{\alpha}_{\vtheta}(\vx_i)-y_i)}^2.
+\end{equation}
+Then the training dynamic by using gradient descent~(GD) obeys the following gradient flow of $\vtheta$,
+\begin{equation}
+    \frac{\D \vtheta}{\D t}=-\nabla_{\vtheta}\RS(\vtheta).
+\end{equation}
+More precisely, $\vtheta=\mathrm{vec}(\{\vq_k\}_{k=1}^m)$ with $\vq_k=(a_k,\vw_k^{\T})^\T$, $k\in[m]$ solves
+\begin{align*}
+    \frac{\D a_k}{\D t}
+     & = -\frac{1}{n}\sum_{i=1}^n\frac{1}{\alpha}\sigma(\vw_k^{\T}\vx_i) \left(\frac{1}{\alpha}\sum_{k=1}^{m}a_k\sigma(\vw_k^{\T}\vx_i)-y_i\right)           \\
+    \frac{\D \vw_k}{\D t}
+     & = -\frac{1}{n}\sum_{i=1}^n\frac{1}{\alpha} a_k\sigma'(\vw_k^{\T}\vx_i)\vx_i \left(\frac{1}{\alpha}\sum_{k=1}^{m}a_k\sigma(\vw_k^{\T}\vx_i)-y_i\right).
+\end{align*}
+Let
+\begin{equation}
+    \bar{a}_k=\beta_1^{-1}a_k, \quad \bar{\vw}_k=\beta_2^{-1}\vw_k,\quad \bar{t}=\frac{1}{\beta_1\beta_2}t,
+\end{equation}
+then
+\begin{align*}
+    \frac{\D \bar{a}_k}{\D \bar{t}}
+     & = -\frac{\beta_2}{\beta_1}\frac{1}{n}\sum_{i=1}^n \frac{\beta_1\beta_2}{\alpha}\sigma(\bar{\vw}_k^\T\vx_i) \left(\frac{\beta_1\beta_2}{\alpha}\sum_{k=1}^{m}\bar{a}_k\sigma(\bar{\vw}_k^\T\vx_i)-y_i\right),         \\
+    \frac{\D \bar{\vw}_k}{\D \bar{t}}
+     & = -\frac{\beta_1}{\beta_2}\frac{1}{n}\sum_{i=1}^n\frac{\beta_1\beta_2}{\alpha}\bar{a}_k\sigma'(\bar{\vw}_j^\T\vx_i)\vx_i \left(\frac{\beta_1\beta_2}{\alpha}\sum_{k=1}^{m}\bar{a}_k\sigma(\bar{\vw}_k^\T\vx_i)-y_i\right).
+\end{align*}
+We introduce two scaling parameters
+\begin{equation}
+    \kappa := \frac{\beta_1\beta_2}{\alpha}, \quad \kappa' :=\frac{\beta_1}{\beta_2},
+\end{equation}
+where $\kappa$ and $\kappa'$ are called the energetic scale parameter and the dynamical scale parameter, respectively. Then the above dynamics can be written as
+\begin{align*}
+    \frac{\D \bar{a}_k}{\D \bar{t}}
+     & = -\frac{1}{\kappa'}\left(\frac{1}{n}\sum_{i=1}^n \kappa\sigma(\bar{\vw}_k^\T\vx_i)\right) \left(\kappa\sum_{k=1}^{m}\bar{a}_k\sigma(\bar{\vw}_k^\T\vx_i)-y_i\right), \\
+    \frac{\D \bar{\vw}_k}{\D \bar{t}}
+     & = -\kappa'\left(\frac{1}{n}\sum_{i=1}^n\kappa \bar{a}_k\sigma'(\bar{\vw}_k^\T\vx_i)\vx_i\right) \left(\kappa\sum_{k=1}^{m}\bar{a}_k\sigma(\bar{\vw}_k^\T\vx_i)-y_i\right).
+\end{align*}
+The above recaled dynamics can be treated as a weighted gradient flow of NN scaled by $\kappa$ equipped with the empirical risk
+\begin{align}\label{eq:normalized-model}
+    f^{\kappa}_{\vtheta}(\vx)
+     & = \kappa\sum_{k=1}^{m}\bar{a}_k\sigma(\bar{\vw}_k^\T\vx),         \\
+    R_{S, \kappa}(\vtheta)
+     & =\frac{1}{2n}\sum_{i=1}^n{(f^{\kappa}_{\vtheta}(\vx_i)-y_i)}^2,
+\end{align}
+with the following initialization
+\begin{equation}
+    \bar{a}_j^0\sim N(0,1), \quad \bar{\vw}_j^0\sim N(0,\mI_d),
+\end{equation}
+where we can see they are of standard normal distributions. The weighted GD dynamics then can be written simply as
+\begin{equation}
+    \frac{\D\bar{\vq}_j}{\D \bar{t}} = -\mM_{\kappa'}\nabla_{\vq_k}R_{S,\kappa}(\bar{\vtheta}),
+\end{equation}
+where the mobility matrix
+\begin{equation}
+    \mM_{\kappa'} =
+    \begin{pmatrix}
+        1/\kappa' &         \\
+                          & \kappa'\mI_d 
+    \end{pmatrix}.
+\end{equation}
+In the following discussion throughout this paper, we will refer this rescaled model~\eqref{eq:normalized-model} as \emph{normalized} model and drop superscript $\kappa$ and all the ``bar''s of $a_k$, $\vw_k$, $t$ for simplicity. 
+Note that $\kappa$ and $\kappa'$ do not follow principle (ii) and (iii) above at infinite-width limit. They are in general functions of $m$, which only attains $0$, $O(1)$, $+\infty$ at $m\to\infty$. For example, $\kappa=0$ and $\kappa'=0$ for both the NTK and mean-field model, however, they are known to have distinctive training behaviors. To account for the widely considered power-law scaling of $\alpha$, $\beta_1$ and $\beta_2$ shown in Table. \ref{tab..InitializationMethods}, we consider 
+\begin{equation}
+    \gamma=\lim_{m\to\infty}-\frac{\log \kappa}{\log m}, \quad \gamma'=\lim_{m\to\infty}-\frac{\log\kappa'}{\log m},
+\end{equation}
+ which meets all above principles as demonstrated later by theory and experiments.
+
+\begin{rmk}
+    We remark that the above rescaling technique can be viewed in analogy to the nondimensionalization in physics, which is the partial or full removal of physical dimensions from an equation involving physical quantities by a suitable substitution of variables. In more general point of view, nondimensionalization can also recover characteristic properties of a system, which in our case recovers the different behaviors of training dynamics for different regimes.
+
+    More specifically, we can view, in the original model~\eqref{eq: 2LNN}, $\vq_k=(a_k,\vw_k^{\T})^\T$, $k\in[m]$ as the generalized coordinates which have the unit of ``length'' denoted as $[\mathrm{L}]$. Then in the two-layer NN~\eqref{eq: 2LNN}, $\alpha$ should have the unit of ``volume'' as a normalization factor depending on $m$ to avoid blowing up of the model. Particularly, if $\sigma$ is $\ReLU$ then we can think $\alpha$'s unit is $[\mathrm{L}]^2$ (unit of area on a plane).
+
+    Finally, following above analysis, $\kappa=\frac{\beta_1\beta_2}{\alpha}$ and $\kappa'=\frac{\beta_1}{\beta_2}$ are two \emph{nondimensional} parameters (without unit) so as for $\gamma$ and $\gamma'$, which are suitable to serve as the coordinations of our phase diagram.
+\end{rmk}
+\begin{rmk}
+    Here we list some commonly-used initialization methods and/or related works with their scaling parameters as shown in Table~\ref{tab..InitializationMethods}.
+\end{rmk}
+
+\begin{table}[ht]\footnotesize
+    \centering
+    \begin{tabularx}{\textwidth}{lccccccc}
+        \toprule
+        \multirow{2}{*}{Name~\scriptsize{[{related works}]}} & \multirow{2}{*}{$\alpha$} &  \multirow{2}{*}{$\beta_1$} &  \multirow{2}{*}{$\beta_2$} & $\kappa$ & $\kappa'$ & $\gamma$ & $\gamma'$ \\
+         & & & &($\scriptscriptstyle\frac{\beta_1\beta_2}{\alpha}$) & ($\scriptscriptstyle\frac{\beta_1}{\beta_2}$) & ($\scriptscriptstyle\lim\limits_{m\to\infty}\frac{\log1/\kappa}{\log m}$) & ($\scriptscriptstyle\lim\limits_{m\to\infty}\frac{\log 1/\kappa'}{\log m}$)\\
+        \midrule
+        LeCun~\scriptsize{\cite{lecun2012efficient}} & $1$ & $\sqrt{\frac{1}{m}}$ & $\sqrt{\frac{1}{d}}$ & $\sqrt{\frac{1}{dm}}$ & $\sqrt{\frac{d}{m}}$ & $\frac{1}{2}$ & $\frac{1}{2}$ \\
+        He~\scriptsize{\cite{he2015delving}} & $1$ & $\sqrt{\frac{2}{m}}$ & $\sqrt{\frac{2}{d}}$ & $\sqrt{\frac{4}{dm}}$ & $\sqrt{\frac{d}{m}}$ & $\frac{1}{2}$ & $\frac{1}{2}$ \\
+        Xavier~\scriptsize{\cite{glorot2010understanding}} & $1$ & $\sqrt{\frac{2}{m+1}}$ & $\sqrt{\frac{2}{m+d}}$ & $\sqrt{\frac{4}{(m+1)(m+d)}}$ & $\sqrt{\frac{m+d}{m+1}}$ & $1$ & $0$ \\
+        NTK~\scriptsize{\cite{jacot_neural_2018}} & $\sqrt{m}$ & $1$ & $1$ & $\sqrt{\frac{1}{m}}$ & $1$ & $\frac{1}{2}$ & $0$\\
+        Mean field~\scriptsize{\cite{mei_mean_2018,sirignano_mean_2020,rotskoff_parameters_2018}} & $m$ & $1$ & $1$ & $\frac{1}{m}$ & $1$ & $1$ & $0$ \\
+        E et al.~\scriptsize{\cite{e2020comparative}} & $1$ & $\beta$ & $1$ & $\beta$ & $\beta$ & $\scriptscriptstyle\lim\limits_{m\to\infty}\frac{\log 1/\beta}{\log m}$ & $\scriptscriptstyle\lim\limits_{m\to\infty}\frac{\log 1/\beta}{\log m}$ \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Initialization methods with their scaling parameters}
+    \label{tab..InitializationMethods}
+\end{table}
+
+\subsection{Typical cases over the phase diagram}
+
+With $\gamma$ and $\gamma^{\prime}$ as coordinates, in this subsection, we illustrate through experiments the behavior of a diversity of typical cases over the phase diagram using a simple $1$-d problem of $4$ training points, which allows easy visualization. 
+
+The first row in Fig.~\ref{fig:targetfunc} shows typical learning results over different $\gamma$'s, from a \textcolor{red}{relatively jagged interpolation} to a smooth cubic-spline-like interpolation and further to a linear spline interpolation. 
+
+To probe into details of their parameter space representation, we notice for the ReLU activation that the parameter pair $(a_k,\vw_k)$ of each neuron can be separated into a unit orientation feature $\hat{\vw}=\vw/\norm{\vw}_{2}$ and an amplitude $A=|a|\norm{\vw}_{2}$ indicating its contribution to the output, that is, $(A,\hat{\vw})$. For the one-dimensional input, we use the orientation angle to indicate each $\hat{\vw}$. The scatter plot of $\{(A_k,\hat{\vw}_k)\}_{k=1}^{m}$ is shown in the second row in Fig.~\ref{fig:targetfunc}. The evolution of the parameters of four examples in the first row Fig.~\ref{fig:targetfunc} are different. For $\gamma=0.5$, the initial scatter plot is very close to the one after training. However, for $\gamma=1.75$, active neurons are condensed at a few orientations, which obviously deviates from the initial scatter plot. Parameter $\vw$ is inside the non-linear activation function, therefore, the deviation of $\vw$ from its initialization would be critical to decide whether the NN is in the non-linear regime. 
+%In the latter case, it is not clear whether the NN is in the non-linear regime since the change can be induced by either $\vw$ or $a$ or both.
+\begin{figure}
+    \centering
+    \subfloat[$\gamma=0.5$]{
+        \includegraphics[width=0.25\textwidth]{pic/systemexp/gammap0/sf0f0/0.500f0f0/1000r1263/ufinal.pdf}
+    }
+    \subfloat[$\gamma=1$]{
+        \includegraphics[width=0.25\textwidth]{pic/systemexp/gammap0/sf0f0/1.000f0f0/1000r1832/ufinal.pdf}
+    }
+    \subfloat[$\gamma=1.75$]{
+        \includegraphics[width=0.25\textwidth]{pic/systemexp/gammap0/sf0f0/1.750f0f0/1000r624/ufinal.pdf}
+    }
+    \\
+    \subfloat[$\gamma=0.5$]{
+        \includegraphics[width=0.25\textwidth]{pic/systemexp/gammap0/sf0f0/0.500f0f0/1000r1263/av.pdf}
+    }
+    \subfloat[$\gamma=1$]{
+        \includegraphics[width=0.25\textwidth]{pic/systemexp/gammap0/sf0f0/1.000f0f0/1000r1832/av.pdf}
+    }
+    \subfloat[$\gamma=1.75$]{
+        \includegraphics[width=0.25\textwidth]{pic/systemexp/gammap0/sf0f0/1.750f0f0/1000r624/av.pdf}
+    }
+    \caption{Learning four data points by two-layer ReLU NNs with different $\gamma$'s are shown in the first row. The corresponding initial~(cyan) and final~(red) scatter plots of $\{(A_k,\hat{\vw}_k)\}_{k=1}^{m}$ are shown in the second row. $\gamma^{\prime}=0$ ($\beta_1=\beta_2=1$), hidden neuron number is $1000$.}
+    \label{fig:targetfunc}
+\end{figure}
+
+
+% E et al.~\footnotesize{\cite{e2020comparative}} & $1$ & $m^{-\gamma}$ & $1$ & $m^{-\gamma}$ & $m^{-\gamma}$ & $(-6,+\infty)$&  $\gamma$ \\
+\section{Phase diagram}
+In this section, with $\gamma$ and $\gamma^{\prime}$ as coordinates, we characterize at $m\to\infty$ the dynamical regimes of NNs and identify their boundaries in the phase diagram through experimental and theoretical approaches. 
+How to characterize and classify different types of training behaviors of NNs is an important open question. Different research groups made attempts and proposed different criterions \textcolor{red}{[more?]}. Currently, the linear regime, in which gradient flow of NNs can be effectively linearized around initialization during the training, has been extensively studied both empirically and theoretically \cite{jacot_neural_2018,lee_wide_2019,arora2019exact,e2020comparative}. As shown in Fig. \ref{fig:phase-diagram}, many works has proved that at a specific point or line in the phase diagram, NNs can be effectively linearized. However, the exact range of the linear regime in the 2-d phase diagram remains unclear. On the other hand, NN training dynamics can be highly nonlinear at $m\to\infty$ as widely studied for the mean field model as a point shown in the phase diagram \cite{mei_mean_2018,sirignano_mean_2020,rotskoff_parameters_2018}. However, whether there are other points in the phase diagram that has similar training behavior is not well understood. In addition, it is not clear if there are other regimes in the phase diagram that are nonlinear but behaves distinctively comparing to the mean field model. In the following, we will address these issues.
+
+\subsection{Scaling analysis}
+Before we jump into detailed analysis. We first illustrate through an intuitive scaling analysis the separation between linear and nonlinear regimes in the phase diagram. 
+The capability of the two-layer ReLU NN around initialization can be roughly estimated as 
+\[
+C = m \beta_1 \beta_2/\alpha=m\kappa
+\]
+Without loss of generality, the target function is always $O(1)$. Therefore, a necessary condition for the linear regime is that NN can fit the target in the vicinity of initialization, i.e., $C \gtrsim O(1)$. Therefore
+\[
+\kappa \gtrsim 1/m,
+\]
+i.e., $\gamma\leq1$. We further notice that, the output layer is always linear. Therefore, even when the output weights $\vtheta_{a}$ changes significantly, the dynamics can still be linearized if the input layer weights $\vtheta_{\vw}$ stays in the vicinity of its initialization. This is possible when $\mathrm{std}(a)\ll \beta_2$ at initialization, i.e., $\beta_1\ll\beta_2$, and throughout the training. In this case, at the end of the training,  $$C = m\beta_2 \mathrm{std}(a)/\alpha  \ll m\beta_2^2/\alpha=m\kappa/\kappa'$$. Because $C \sim O(1)$, we got $$1/\kappa'\gg 1/m\kappa$$, which yields the condition $\gamma'>\gamma-1$ for $\gamma'>0$. As demonstrated by the following theoretical and experimental results, linear and nonlinear regimes are exactly separated by $\gamma=1$ for $\gamma'\leq0$ and $\gamma'>\gamma-1$ for $\gamma'>0$ obtained by above scaling analysis.
+
+\subsection{Linear regime}
+The linear regime refers to the following dynamical behavior of the two-layer NN: gradient flow of $f^{\kappa}_{\vtheta}$ at any $t$ is well approximated by gradient flow of its linearized model 
+\begin{equation}
+    f^{\kappa,\mathrm{lin}}_{\vtheta}=f^{\kappa}_{\vtheta(0)}+\nabla_{\vtheta}f^{\kappa}_{\vtheta(0)}(\vtheta(t)-\vtheta(0)).    
+\end{equation}
+ Without loss of generality, we always offset $f^{\kappa}_{\vtheta(0)}$ to $0$ by the ASI trick to eliminate the extra generalization error induced by a random initial function as studied in~\cite{zhang_type_2019}. Therefore, $f^{\kappa,\mathrm{lin}}_{\vtheta}=\nabla_{\vtheta}f^{\kappa}_{\vtheta(0)}(\vtheta(t)-\vtheta(0))$. 
+In general, this behavior only happens when $\vtheta(t)$ always stays within a small neighbourhood of $\vtheta(0)$ such that the first order Taylor expansion is a good approximation. For a two-layer NN, because its output layer is always linear of output weights, this requirement is reduced to the one for the input weights, that is, $\vtheta^*_{\vw}(t)$ always stays within a neighbourhood of $\vtheta^*_{\vw}(0)$. Since the size of this neighbourhood scales with $\norm{\theta_{\vw}^{0}}_{2}$, therefore we use the following relative distance as an indicator of how far $\vtheta^*_{\vw}(t)$ deviates from $\vtheta^*_{\vw}(0)$
+
+\begin{equation}
+    \mathrm{RD}(\vtheta^*_{\vw})=\frac{\norm{\theta_{\vw}^*-\theta_{\vw}^{0}}_{2}}{\norm{\theta_{\vw}^{0}}_{2}}.
+\end{equation}
+
+Specifically, as $m\to\infty$, if $\mathrm{RD}(\vtheta^*_{\vw})\to0$, then the NN training dynamics falls into the linear regime. Otherwise, if $\mathrm{RD}(\vtheta^*_{\vw})\to O(1)$ or $\mathrm{RD}(\vtheta^*_{\vw})\to +\infty$, then NN training dynamics cannot be linearized, thus ourside of the linear regime.
+
+Theoretically, we prove the following theorem
+
+[informal statement]
+
+By above theorem, $\mathrm{RD}(\vtheta^*_{\vw})\to0$ for $\gamma<1$ and $\gamma'>\gamma-1$. However, the theorem does not address whether this boundary is critical. Therefore, in the following, we sort to experimental approaches.
+
+To experimentally identify the boundary of the linear regime, we should first quantify the growth of $\mathrm{RD}(\vtheta^*_{\vw})$ as $m\to\infty$. By Fig. \ref{fig:diffbeta} (a-c), they approximately have a power-law relation. Therefore we define 
+\begin{equation}
+    S_{\vw}=\lim_{m\to\infty}\frac{\log \mathrm{RD}(\vtheta^*_{\vw})}{\log m},
+\end{equation}
+which is empirically obtained by estimating the slope in the log-log plot like Fig. \ref{fig:diffbeta}. As shown in Fig. \ref{fig:diffbeta} (d), NNs with the same pair of $\gamma$ and $\gamma'$, but different $\alpha$, $\beta_1$, and $\beta_2$, have very similar $S_{w}$, which validate the effective of the normalized model. In the following exepriments, we only show result of one combination of $\alpha$, $\beta_1$, and $\beta_2$ for a pair of $\gamma$ and $\gamma'$.
+\begin{figure}
+    \centering
+    \subfloat[$\gamma=0.5$]{
+        \includegraphics[width=0.23\textwidth]{pic/systemexp/gammap0/sf0f0/0.500f0f0/wreladiffrescale.pdf}
+    }
+    \subfloat[$\gamma=1$]{
+        \includegraphics[width=0.23\textwidth]{pic/systemexp/gammap0/sf0f0/1.000f0f0/wreladiffrescale.pdf}
+    }
+    \subfloat[$\gamma=1.75$]{
+        \includegraphics[width=0.23\textwidth]{pic/systemexp/gammap0/sf0f0/1.750f0f0/wreladiffrescale.pdf}
+    }
+    \subfloat[$S_{w}$ vs. $\gamma$]{
+        \includegraphics[width=0.23\textwidth]{pic/systemexp/gammap0/wslope.pdf}
+    }
+    \caption{Growth of $\mathrm{RD}(\vtheta^*_{\vw})$ w.r.t.\ $m\to\infty$ with $\gamma^{\prime}=0$. For (a-c), the plot is $\mathrm{RD}(\vtheta^*_{\vw})$ vs.\ $m$ of NNs with $1000,5000,10000,20000,40000$ hidden neurons indicated by five blue dots, respectively. The gray line is a linear fit with slope indicated. For (d), the plot is $S_{\vw}$ vs. $\gamma$ for $\gamma'=0$. Each line is for a pair of $\beta_1$ and $\beta_2$: Blue: $\beta_1=1$, $\beta_2=1$; Orange: $\beta_1=m^{-1/2}$, $\beta_2=m^{-1/2}$; Blue: $\beta_1=m^{-1}$, $\beta_2=m^{-1}$.}
+    \label{fig:diffbeta}
+\end{figure}
+
+Then, we experimentally scan $S_w$ over the phase space. The result is presented in Fig. \ref{fig:wds}. In the red zone, where $S_{\vw}$ is less than zero, $\mathrm{RD}(\vtheta^*_{\vw})\to0$ as $m\to0$, indicating a linear regime. In contrast, in the blue zone, where $S_{\vw}$ is greater than zero, $\mathrm{RD}(\vtheta^*_{\vw})\to0$ as $m\to\infty$, indicating a highly nonlinear behavior. Their boundary are experimentally identified through interpolation indicated by stars in Fig. \ref{fig:wds}, where $\mathrm{RD}(\vtheta^*_{\vw})\sim O(1)$. They are close to the boundary identified theoretically indicated by the auxiliary lines, thus justifying that the boundary obtained theoretically is critical.
+%This boundary consists of two rays, one is  $\gamma=1$ and $\gamma^{\prime}\leq 0$, the other is $\gamma-\gamma^{\prime}=1$ and $\gamma^{\prime}\geq 0$.  In the left regime, the slope is smaller than zero, i.e.,  the deviation of $\vw$  decreases as $m\to\infty$. During the training process, the feature of each neuron, i.e., $\vw$, stays close to the same, then, NNs behaves like a random feature model. Therefore, the left side is the linear regime. On the boundary, the deviation of $\vw$ is $O(1)$, regardless of the variation of $m$, thus, NN this critical regime behaves non-linearly. Apparently, on the right side of the boundary, NNs behaves non-linearly since the deviation of $\vw$ tends to infinity as $m$ increases. This right side regime is called condensed regime due to a distinct condensation phenomenon as examined in the following experiments.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{pic/systemexplarg3/scalestudy3/rescale_w_slope.pdf}
+    \caption{$S_{\vw}$ estimated on NNs of $1000$, $5000$, $10000$, $20000$, $40000$ neurons over $\gamma$ (ordinate) and $\gamma^{\prime}$ (abscissa). The stars are zero points obtained by the linear interpolation over different $\gamma$ for each fixed $\gamma^{\prime}$. Dashed lines are auxiliary lines.}
+    \label{fig:wds} 
+\end{figure}
+
+\subsection{Critical and condensed regimes}
+Above, we clearly identified the boundary of linear regime in the phase diagram. However, whether the rest part has similar nonlinear characteristics in their training dynamics is not known. By Fig. \ref{fig:targetfunc} (d-f), it can be observed that the condensation of NN representation in feature space $\{(A_k,\hat{\vomega}_k)\}_{k=1}^m$ comparing to initialization is a key feature for the nonlinear training dynamics of NNs. Specifically, we care about this condensation at the $m\to\infty$ limit, which potentially gives rise to distinctive of behaviors. Therefore, using the same $4$-point 1-d data, we scan the learned distribution of $(A_k,\hat{\vomega}_k)$ pair for $m=10^3,10^4,10^6$ over the phase diagram to experimentally find out the limiting behavior. The result is shown in Fig. \ref{fig:cdnmap}. It is easy to observe that, right to the boundary indicated by blue boxes, the condensation becomes stronger as $m\to\infty$, implying a $\delta$-like condensation behavior at the limit. Therefore, we name this regime the condense regime. From previous experiments, this regime can also be characterized by $RD_{\vw}\to \infty$. This conforms with our intuition that the farther away from initialization, the stronger nonlinearity exhibited here as condensation. At the boundary, the level of condensation is almost fixed as $m\to\infty$, which resembles a mean-field behavior. Indeed, the well-studied mean-field model is one point on the boundary. We refer to this boundary the critical regime. This regime can also be characterized by $RD_{\vw}\to O(1)$. 
+
+\section{Conclusions and discussion}
+
+In this paper, we characterized the linear, critical and condensed regimes with distinctive features and draw the phase diagram for the two-layer ReLU NN at the infinite-width limit. For the linear regime, we prove rigorous mathematical theorems, whereas for the critical and condensed regimes of high nonlinearity, we rely on carefully designed experiments. This mixed strategy is important for the fundamental research of NNs from the mathematics and physics perspectives. 
+A phase diagram serves as a map that guides the future research. In our phase diagram for two-layer ReLU NNs, the linear regimes is almost fully understood both theoretically and experimentally. However, the critical and condensed regimes are still largely not understood from both experimental and theoretical perspective. [For example?]
+
+
+
+
+
+\begin{figure}
+    \begin{centering}
+        \includegraphics[scale=0.8]{pic/systemexplarg3/scalestudy3/angleamptogether.png}
+        \par\end{centering}
+    \caption{Condensation map. The abscissa coordinate is $\gamma$ and the ordinate one is $\gamma^{\prime}$. $m=10^{3}$ (blue), $10^{4}$ (red), $10^{6}$ (yellow).}\label{fig:cdnmap}
+\end{figure}
+
+
+
+
+\section{Experiments}
+\subsection{Effectiveness of the normalized  model}
+
+We would empirically show that $\gamma$ and $\gamma^{\prime}$ are two variables that can effectively and uniquely characterize the training of NNs. To this end, we consider different networks, which have different $\alpha$, $\beta_1$ and $\beta_2$ but the same $\gamma$ and $\gamma^{\prime}$.
+
+Consider the rescaled parameter set at the initial state and the well trained state. Through out this paper, we consider a training dataset of four data points. Fig.~\ref{fig:targetfunc} shows typical learning results over different $\gamma$'s, from smooth interpolation to a piecewise linear interpolation.
+
+The parameter $\vtheta$ is a collection of the parameter pair $(a_k,\vw_k)$ of each neuron. The dimension of $\vw_k$ is at least two with the input and the bias term. We study each neuron by considering the orientation $\hat{\vw}=\vw/\norm{\vw}_{2}$ and the amplitude $A=|a|\norm{\vw}_{2}$, that is, $(A,\hat{\vw})$.  Note that as we consider the ReLU activation, $\sigma(\vw^\T\vx)=\norm{\vw}_{2}\sigma(\hat{\vw}\cdot\vx)$.  For the one-dimensional input, we use the orientation angle to represent $\hat{\vw}$. The scatter plot of $\{(A_k,\hat{\vw}_k)\}_{k=1}^{m}$ is shown in Fig.~\ref{fig:twoexnorm}. The evolution of the parameters of two examples in Fig.~\ref{fig:targetfunc} are significantly different. For $\gamma=0.5$, the initial scatter plot is very close to the one after training. However, for $\gamma=1.4$, active neurons are condensed at a few orientations, which obviously deviates from the initial scatter plot. Parameter $\vw$ is inside the non-linear activation function, therefore, the deviation of $\vw$ from its initialization would be critical to decide whether the NN is in the non-linear regime. In the latter case, it is not clear whether the NN is in the non-linear regime since the change can be induced by either $\vw$ or $a$ or both.
+
+ 
+
+To characterize NN in different regimes, we therefore consider the relative  distance between initial and well-trained state of $\vw$.
+\begin{equation}
+    \mathrm{RD}(\vtheta^*_{\vw})=\frac{\norm{\theta_{\vw}^*-\theta_{\vw}^{0}}_{2}}{\norm{\theta_{\vw}^{0}}_{2}}\sim \E^{S_{\vw}m},
+\end{equation}
+where $\theta_{\vw}^{0}$ and $\theta_{\vw}^*$ are the sets of all input weight $\vw$ at the initial and well-trained states, respectively. For each parameter we consider here, it has a unit variance, therefore, $\norm{\theta_{\vw}^{0}}_{2}\sim \sqrt{m}$. Since the $L^2$ norm takes the square root of the summation of each element's square, with $\sqrt{m}$, $\mathrm{RD}_{\vw}$ can be interpreted as the average deviation of each parameter from its initialization.
+
+To consider how $\mathrm{RD}_{\vw}$ varies with the neuron number $m$ in the limit $m\to \infty$, we further consider a linear fit of $\log \mathrm{RD}_{\vw}$ w.r.t.\ large $m$, in which the slope is denoted by $S_{\vw}$. If $S_{\vw}$ is less than zero, as $m$ goes infinity, the well-trained parameter will be closer to the initial one. On the contrary, if $S_{\vw}$ is larger than or equal to zero, the well-trained parameter has significantly deviation from the initial one.
+
+We would then empirically examine $S_{\vw}$ with  NNs of  different  $\alpha$, $\beta_1$ and $\beta_2$ but  the same $\gamma$ and $\gamma^{\prime}$. As an example, we choose three different pair of $\beta_1$ and $\beta_2$ such that  $\gamma^{\prime}=0.1$ and scan $\gamma$. We examine the $S_{\vw}$ based on NNs of $1000,5000,10000,20000,40000$ neurons. As shown in Fig. \ref{fig:diffbeta},  $S_{\vw}$ monotonically increases as $\gamma$. For each $\gamma$, three points almost overlap indicating that different combinations of  $\alpha$, $\beta_1$ and $\beta_2$ is not important while $\gamma$ is crucial.  Therefore, in the following experiments, we only show results of one combination of $\alpha$, $\beta_1$ and $\beta_2$  for each pair of $\gamma$ and $\gamma^{\prime}$.
+
+
+\subsection{Empirical phase diagram}
+
+
+We further examine the scatter plot of  $(A,\hat{\vw})$, as shown in Fig. (\ref{fig:cdnmap}). Each box displays the scatter plot of  $(A,\hat{\vw})$ corresponding to a pair of ($\gamma$, $\gamma^{\prime}$) for NNs with $10^{3}$ (blue), $10^{4}$ (red) and $10^{6}$ (yellow) neurons, respectively. To visualize the change of the width of active orientations, we normalized each scatter plot by a constant, which is the maximal amplitude of all orientations of all three NNs in a box.  In the right side of  the blue boxes, as the neuron number increases from $10^{3}$ (blue) to $10^{6}$ (yellow), the width of active orientations shrinks significantly as neuron number increases, i.e., an effect of the condensation, which is not observed in the left side.  The two boundary rays in Fig. \ref{fig:wds} are exactly the boundary (blue boxes) of the scatter plot of  $(A,\hat{\vw})$. Therefore, in the non-linear regime, condensation is distinct feature, for which we name it condensed regime.
+
+Note that the black dashed boxes also form a boundary ($\gamma=1$ and $\gamma^{\prime}>0)$ inside the linear regime. Between the black dashed boxes and the blue ones, the the scatter plot of  $(A,\hat{\vw})$ deviates from the initial one, which is generated from  a Gaussian distribution. However, this change is induced by the output weight, which will be further examined in Appendix. Therefore, it is also in the linear regime, behaving like a random feature model.
+
+
+
+
+An intuitive understanding of  the boundary of the linear regime is as follows.
+
+Briefly TALK ABOUT why  $\gamma=1$.
+
+The dynamics speed of $a$ is determined by $\vw$ and the dynamics speed of $\vw$ is determined by $a$. When $\gamma^{\prime}$ is large, $\vw$ is initialized by a large value, thus, $a$ is trained fast. To fit the data, as the $\theta$-lazy regime indicates, $\alpha a \norm{\vw}_{2}$ should be larger than $O(1/m)$ after training. Consider $\gamma^{\prime}>0$, then,
+\[
+    \frac{\beta_1}{\beta_2}=m^{-\gamma^{\prime}}<1,
+\]
+that is,
+\[
+    \beta_1<\beta_2.
+\]
+At the initialization, the evolution of $a$ is much faster than $\vw$ when $m$ is large. Before $a$ evolves to $O(\beta_2)$, for simplicity, we regard $\vw$ stays close to initialization, i.e., $O(\beta_2)$. When $a$ evolves to $O(\beta_2)$, if the network is still not able to fit the data, i.e., $\frac{1}{\alpha} a \norm{\vw}_{2}\sim \frac{\beta_{2}^{2}}{\alpha} $ is no larger than $O(1/m)$, $\vw$ would also start to evolve fast and deviate from its initialization of $O(\beta_2)$. If  $\frac{1}{\alpha} a \norm{\vw}_{2}$ is   larger than $O(1/m)$ before $a$ evolves to $O(\beta_2)$, then, before $\vw$ start to fast evolve, the NN already has capability to fit the data, in such case, $\vw$ would stay close to the initialization. The key to find the boundary of $\vw$-lazy regime is to find where the initialization satisfies $\frac{\beta_{2}^{2}}{\alpha}=1/m$.  Now, consider the case in line $\gamma-\gamma^{\prime}=1$ and $\gamma>1$.
+
+\begin{align}
+    \frac{1}{\alpha} a \norm{\vw}_{2}\sim \frac{\beta_1 \beta_2}{\alpha}=m^{-\gamma}, \\
+    \frac{\beta_1}{\beta_2}=m^{-\gamma^{\prime}}=m^{-(\gamma-1)},
+\end{align}
+we obtain
+\[
+    \frac{\beta_{2}^{2}}{\alpha} =\frac{1}{m}.
+\]
+Therefore, $\gamma-\gamma^{\prime}=1$ and $\gamma>1$ is the boundary for $\vw$-lazy regime. In such regime, the NN behaves like a random feature model, thus, the training dynamics of NN is a linear dynamics w.r.t.\ parameters. The linear regimes contains the $\theta$-lazy regime and $\vw$-lazy regime.
+
+
+BRIEFLY talk about why there two condensations.
+
+For completion, we can also similarly define the slope of the relative deviation for $\vtheta$ and $a$ denoted by $S_{\vtheta}$ and $S_{a}$, respectively. As shown in
+Fig. \ref{fig:theta_a_slope} (a), the boundary for the $\vtheta$ is $\gamma=1$, regardless of $\gamma^{\prime}$, that is, all parameters are close to their initialization after training. For output weight $a$, as shown in Fig. \ref{fig:theta_a_slope}(b), the boundary consists of two rays, one is  $\gamma=1$ and
+$\gamma^{\prime}\geq 0$, the other is $\gamma+\gamma^{\prime}=1$ and $\gamma^{\prime}\leq 0$. This verifies that, in the area between  $\gamma=1$ and $\gamma-\gamma^{\prime}=1$ of  $\gamma^{\prime}\leq 0$, the change of scatter plot from a Gaussian initialization is induced by the change of $a$.
+
+\begin{figure}
+    \begin{centering}
+        \subfloat[]{\begin{centering}
+                \includegraphics[scale=0.4]{pic/systemexplarg3/scalestudy3/relameansysDrescaleslope.pdf}
+                \par\end{centering}
+        }\subfloat[]{\begin{centering}
+                \includegraphics[scale=0.4]{pic/systemexplarg3/scalestudy3/rescale_w_slope.pdf}
+                \par\end{centering}
+        }
+        \par\end{centering}
+    \caption{$S_{\vtheta}$ in (a) and $S_{\vw}$ in (b) estimated on NNs of $1000,5000,10000,20000,40000$ neurons over $\gamma$ (ordinate) and $\gamma^{\prime}$ (abscissa). The stars are zero points obtained by the linear interpolation over different $\gamma$ for each fixed $\gamma^{\prime}$. Dashed lines are auxiliary lines.   \label{fig:theta_a_slope} }
+\end{figure}
+
+
+
+
+\section{Theoretical characterization of Regimes}
+To make our main theorems clear, we collect and rigorously describe our notations and definitions in the beginning of this section. Then we state our main results whose proofs can be found in the appendix.
+
+To start with, let us consider a two layer neural network
+\begin{equation}
+    f_{\vtheta}(\vx) := \frac{1}{\kappa}f^\kappa_{\vtheta}(\vx) = \sum_{k=1}^{m} a_k\sigma(\vw_k^\T\vx),
+\end{equation}
+with the activation function $\sigma(z) = \ReLU(z) = \max(z, 0)$. Denote the dataset
+\begin{equation}
+    S = {\{(\vx_i, y_i)\}}_{i=1}^n,
+\end{equation}
+where $\vx_i$'s are i.i.d.\ sampled from the (unknown) distribution $\fD$ over $\Omega={[0,1]}^d$ with $(\vx_i)_d=1$ and $y_i=f(\vx_i)\in[0,1]$ for all $i\in[n]$.
+
+We denote $e_i = \kappa f_{\vtheta}(\vx_i) - y_i = \kappa f_{\vtheta}(\vx_i) - f(\vx_i)$, $i\in[n]$ and $\ve = {(e_1, e_2, \ldots, e_n)}^{\T}$. Then the empirical risk can be written as
+\begin{equation}
+    \RS(\vtheta):=R_{S,\kappa}(\vtheta) = \frac{1}{2n}\sum_{i=1}^n{\left(\kappa f_{\vtheta}(\vx_i)-y_i\right)}^2 = \frac{1}{2n}\ve^{\T}\ve.
+\end{equation}
+Its gradient descent (GD) dynamics is
+\begin{equation}\label{eqn:gd_dyn}
+    \dot{\vtheta} = -M_{\kappa'}\nabla_{\vtheta}\RS(\vtheta),
+\end{equation}
+with a more explicit form for $a_k$ and $\vw_k$ respectively
+\begin{equation}
+    \left \{
+    \begin{aligned}
+        \dot{a}_k   & = -\frac{1}{\kappa'}\nabla_{a_k}\RS(\vtheta) = -\frac{\kappa}{\kappa'n}\sum_{i=1}^{n}e_i\sigma(\vw_k^\T\vx_i), \\
+        \dot{\vw}_k & =-\kappa'\nabla_{\vw_k}\RS(\vtheta) = -\frac{\kappa\kappa'}{n}\sum_{i=1}^n e_i a_i\sigma'(\vw_k^\T\vx_i)\vx_i.
+    \end{aligned}
+    \right.\label{eq..MainDynamics}
+\end{equation}
+Here $\kappa,\kappa'$ are scale parameters proposed in Section \ref{sec..Rescaling}.
+The parameters are initialized as
+\begin{align}
+    a^0_k     & :=a_k(0)\sim N(0,1),                            \\
+    \vw_k^0   & :=\vw_k(0)\sim N(0,\mI_d),                      \\
+    \vtheta^0 & := \vtheta(0) = \mathrm{vec}(\{a_k^0, \vw_k^0\}_{k=1}^m).\label{eq..MainInitialization}
+\end{align}
+The kernels $k^{[a]}$ and $k^{[\vw]}$ of the GD dynamics are
+\begin{equation}
+    \begin{aligned}
+         & k^{[a]}(\vx,\vx')=\Exp_{\vw}\sigma(\vw^\T\vx)\sigma(\vw^\T\vx'),                        \\
+         & k^{[\vw]}(\vx,\vx')=\Exp_{(a,\vw)}a^2\sigma'(\vw^\T\vx)\sigma'(\vw^\T\vx')\vx\cdot\vx'. \\
+    \end{aligned}
+\end{equation}
+The Gram matrices $\mK^{[a]}$ and $\mK^{[\vw]}$ of an infinite width two-layer network are
+\begin{equation}
+    \begin{aligned}
+         & K^{[a]}_{ij}=k^{[a]}(\vx_i,\vx_j), \quad \mK^{[a]}=(K_{ij}^{[a]})_{n\times n},         \\
+         & K^{[\vw]}_{ij}=k^{[\vw]}(\vx_i,\vx_j), \quad \mK^{[\vw]}=(K_{ij}^{[\vw]})_{n\times n}.
+    \end{aligned}
+\end{equation}
+
+\noindent The Gram matrices $\mG^{[a]}$, $\mG^{[\vw]}$, and $\mG$ of a finite width two-layer network have the following expressions
+\begin{equation}
+    \begin{aligned}
+         & G^{[a]}_{ij}(\vtheta)=\frac{1}{\kappa'm}\sum_{k=1}^m\nabla_{a_k}\kappa f_{\vtheta}(\vx_i)\cdot\nabla_{a_k}\kappa f_{\vtheta}(\vx_j)=\frac{\kappa^2}{\kappa' m}\sum_{k=1}^m\sigma(\vw_k^\T\vx_i)\sigma(\vw_k^\T\vx_j),                             \\
+         & G^{[\vw]}_{ij}(\vtheta)=\frac{\kappa'}{m}\sum_{k=1}^m\nabla_{\vw_k}\kappa f_{\vtheta}(\vx_i)\cdot\nabla_{\vw_k} \kappa f_{\vtheta}(\vx_j)=\frac{\kappa^2\kappa'}{m}\sum_{k=1}^m a_k^2\sigma'(\vw_k^\T\vx_i)\sigma'(\vw_k^\T\vx_j)\vx_i\cdot\vx_j, \\
+         & \mG=\mG^{[a]}+\mG^{[\vw]}.
+    \end{aligned}
+\end{equation}
+\begin{assump}\label{assump..lambda}
+    Suppose that the Gram matrices are strictly positive definite. In other words,
+    \begin{equation}
+        \lambda:=\min \{\lambda_a,\lambda_{\vw}\}>0,
+    \end{equation}
+    where
+    \begin{equation}
+        \lambda_a := \lambda_{\min}\left(\mK^{[a]}\right),\quad \lambda_{\vw} := \lambda_{\min}\left(\mK^{[\vw]}\right).
+    \end{equation}
+\end{assump}
+\begin{assump}\label{assump..gammagamma'}
+    Suppose that the following limits exist
+    \begin{equation}
+        \gamma:=\lim_{m\to\infty}-\frac{\log\kappa}{\log m},\quad        \gamma':=\lim_{m\to\infty}-\frac{\log\kappa'}{\log m}.
+    \end{equation}
+\end{assump}
+\begin{rmk}
+    We expect that
+    \begin{equation}
+            \mG^{[a]}(\vtheta^0)  \approx\frac{\kappa^2}{\kappa'}\mK^{[a]},\quad
+            \mG^{[\vw]}(\vtheta^0) \approx\kappa^2\kappa'\mK^{[\vw]},
+    \end{equation}
+    and these will be rigorously achieved in the following proofs. We also remark that $\lambda \leq d$, which will be used in the following proofs.
+\end{rmk}
+\begin{rmk}
+    When $\gamma\leq\frac{1}{2}$, we consider NNs with non-zero initial parameters and zero initial output, which can be achieved in NNs by applying the AntiSymmetrical Initialization (ASI) trick \cite{zhang_type_2019}.
+\end{rmk}
+
+Our main results are as follows.
+\begin{thm}[linear regime]\label{thm..LinearRegime}
+    Given $\delta\in(0,1)$ and the sample set $S = {\{(\vx_i, y_i)\}}_{i=1}^n\subset\Omega$ with $\vx_i$'s drawn i.i.d.\ from some unknown distribution $\fD$. Suppose that Assumption~\ref{assump..lambda} and Assumption~\ref{assump..gammagamma'} hold. ASI is used when $\gamma\leq\frac{1}{2}$. Suppose that $\gamma<1$ or $\gamma'>\gamma-1$ and the dynamics \eqref{eq..MainDynamics}--\eqref{eq..MainInitialization} is considered. Then for sufficiently large $m$, with probability at least $1-\delta$ over the choice of $\vtheta^0$, we have
+    \begin{enumerate}[(a)]
+        \item (changes of $\vtheta$ and $\vtheta_{\vw}$)
+        \begin{equation}
+            \sup\limits_{t\in[0,+\infty)}\norm{\vtheta_{\vw}(t)-\vtheta_{\vw}^0}_2\leq \sup\limits_{t\in[0,+\infty)}\norm{\vtheta(t)-\vtheta^0}_2\lesssim\frac{1}{\sqrt{m}\kappa}\log m.
+        \end{equation}
+        \item (linear convergence rate) 
+        \begin{equation}
+            \RS(\vtheta(t))\leq \exp\left(-\frac{2m\kappa^2\lambda t}{n}\right)\RS(\vtheta^0).
+        \end{equation}
+    \end{enumerate}
+        Moreover, for sufficiently large $m$, with probability at least $1-\delta-2\exp\left(-\frac{C_0m(d+1)}{4C^2_{\psi,1}}\right)$ over the choice of $\vtheta^0$, we have
+    \begin{enumerate}[(c)]
+        \item (relative change of $\vtheta$)
+        \begin{equation}
+            \sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta(t)-\vtheta^0}_2}{\norm{\vtheta^0}_2}\lesssim\frac{1}{m\kappa}\log m.
+        \end{equation} 
+        In particular, if $\gamma<1$, $\sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta(t)-\vtheta^0}_2}{\norm{\vtheta^0}_2}\ll 1.$
+        \item (relative change of $\vtheta_{\vw}$)
+        \begin{equation}
+            \sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta_{\vw}(t)-\vtheta_{\vw}^0}_2}{\norm{\vtheta_{\vw}}_2}
+            \lesssim
+            \left\{
+            \begin{array}{cc}
+               \frac{1}{m\kappa}\log m, &  \gamma<1,\\
+               \frac{\kappa'}{m\kappa}\log m, & \gamma'>\gamma-1.
+            \end{array}\right.
+        \end{equation}
+        In particular, if either $\gamma<1$ or $\gamma'>\gamma-1$, $\sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta_{\vw}(t)-\vtheta_{\vw}^0}_2}{\norm{\vtheta_{\vw}}_2}\ll1$.
+    \end{enumerate}
+\end{thm}
+\begin{rmk}
+    In the regions $\gamma<1$ or $\gamma'>\gamma-1$,
+    Theorem \ref{thm..LinearRegime} shows that with a high probability over the initialization, the relative changes of $\vw_k$'s are negligible. This implies that the features change only slightly during the whole gradient descent dynamics. Therefore, in this regime and with large width $m$, one can expect the training result to be close to that of some proper linear regression model. Note that the relative change of $\vtheta$ is negligible only in the sub-region $\gamma<1$. For $\gamma\geq 1$ and $\gamma'>\gamma-1$, the relative changes of $a_k$'s can be fairly large, which may lead to unbounded relative change of $\vtheta$.
+\end{rmk}
+
+
+Recall that in the scaling analysis we have $\bar{t}=\frac{1}{\beta_1\beta_2}t=\eta t$. Here $\eta:=\frac{1}{\beta_1\beta_2}=\frac{1}{\alpha\kappa}$ is regarded as the characteristic time scale which can be regarded as the learning rate in machine learning. Thus the following remark and Theorem \ref{thm..NonLazyRegime} together show that relatively less iterations are required in the linear regime than the ones in the condensed regime.
+\begin{rmk}
+    In the setting of Theorem~\ref{thm..LinearRegime}, $\RS(\vtheta^0)=O(1)$ and
+    \begin{equation}
+        \RS(\vtheta(t))\leq\exp\left(-\frac{2m\kappa^2\lambda t}{n}\right)\RS(\vtheta^0),
+    \end{equation}
+    To achieve the tolerance $\eps$, it is sufficient for $t\geq T$ where $T$ satisfies
+    \begin{equation}
+        \eps=\exp\left(-\frac{2m\kappa^2\lambda T}{n}\right)\RS(\vtheta^0).
+    \end{equation}
+    Without loss of generality, we apply ASI trick and $\RS(\vtheta^0)=\frac{1}{2}$ then
+    \begin{equation}
+        \abs{\log 2\eps}=\frac{2m\kappa^2\lambda T}{n}, \quad T:=\frac{\abs{\log 2\eps}n}{2m\kappa^2\lambda}=O\left(\frac{1}{m\kappa^2}\right),
+    \end{equation}
+    for $\gamma<1$,
+    \begin{equation}
+        T:=O\left(\frac{1}{m\kappa^2}\right).
+    \end{equation}
+    Recall that the learning rate $\eta=\frac{1}{\alpha\kappa}$. Thus the number of iterations (or epochs) of the dynamics is
+    \begin{equation}
+        n_\mathrm{iter}=O\left(\frac{T}{\eta}\right)=O\left(\frac{\alpha}{m\kappa}\right)\ll \alpha.
+    \end{equation}
+    Here $1/\alpha$ can be regarded as the reference scale of number of iterations. 
+\end{rmk}
+\begin{thm}[active training]\label{thm..NonLazyRegime}
+     Given $\delta\in(0,1)$ and the sample set $S = {\{(\vx_i, y_i)\}}_{i=1}^n\subset\Omega$ with $\vx_i$'s drawn i.i.d.\ from some unknown distribution $\fD$. Suppose that Assumption~\ref{assump..lambda} and Assumption~\ref{assump..gammagamma'} hold. We further suppose that $\max\limits_{i\in[n]}f(\vx_i)\geq\frac{1}{2}$ and $\gamma-1-\abs{\gamma'}>0$ then for any $\eps\in\left(0,\frac{1}{16n}\right)$, with probability at least $1-\delta$ over the choice of $\vtheta^0$, we have if at time $T$, $\RS(\vtheta(t))\leq\eps\RS(\vtheta^0)$, then
+    \begin{equation}
+        T=\Omega\left(\frac{1}{\kappa}\log m\right).
+    \end{equation}
+    Thus the number of iterations (or epochs) of the dynamics is
+    \begin{equation}
+        n_\mathrm{iter}=\Omega\left(\frac{T}{\eta}\right)=\Omega\left(\alpha\log m\right)\gg \alpha.
+    \end{equation}
+\end{thm}
+
+
+\appendix
+\section{Technical lemmas}
+This section collects some technical lemmas and propositions. For convenience, we define the two quantities
+\begin{equation}
+    \alpha(t):=\max\limits_{k\in[m],s\in[0,t]}\abs{a_k(s)}, \quad \omega(t):=\max\limits_{k\in[m],s\in[0,t]}\norm{\vw_k(s)}_{\infty}.
+\end{equation}
+\begin{lem}[bounds of initial parameters]\label{lem..InitialParameter}
+    Given $\delta\in(0,1)$, we have with probability at least $1-\delta$ over the choice of $\vtheta^0$
+    \begin{equation}\label{eqn:lem1}
+        \max\limits_{k\in[m]}\left\{\abs{a_k^0},\;\norm{\vw_k^0}_{\infty}\right \}\leq \sqrt{2\log\frac{2m(d+1)}{\delta}},
+    \end{equation}
+\end{lem}
+\begin{proof}
+    If $\rX \sim N(0, 1)$, then $\Prob(\abs{\rX} > \eps) \leq 2\E^{-\frac{1}{2}\eps^2}$ for all $\eps > 0$. Since $a^0_k\sim N(0,1)$, ${(w_k^0)}_{\alpha}\sim N(0,1)$ for $k=1, 2, \ldots, m,\; \alpha =1,\ldots,d$ and they are all independent, by setting
+    \begin{equation}
+        \eps = \sqrt{2\log\frac{2m(d+1)}{\delta}},
+    \end{equation}
+    one can obtain
+    \begin{equation}
+        \begin{aligned}
+            \Prob\left(\max\limits_{k\in[m]}\left\{\abs{a_k^0},\; \norm{\vw_k^0}_{\infty}\right \}>\eps\right)
+             & = \Prob\left(\max\limits_{k\in[m],\alpha\in[d]}\left\{\abs{a_k^0},\; \abs{{(w^0_k)}_{\alpha}}\right \}>\eps\right)                                            \\
+             & = \Prob\left(\bigcup\limits_{k=1}^m\left(\abs{a_k^0}>\eps\right)\cup\left(\bigcup\limits_{\alpha=1}^d\left(\abs{{(w_k^0)}_{\alpha}}>\eps\right)\right)\right) \\
+             & \leq \sum_{k=1}^m \Prob\left(\abs{a_k^0}>\eps\right) + \sum_{k=1}^m\sum_{\alpha=1}^d \Prob\left(\abs{{(w^0_k)}_{\alpha}}>\eps\right)                          \\
+             & \leq 2m \E^{-\frac{1}{2}\eps^2} + 2md \E^{-\frac{1}{2}\eps^2}                                                                                                 \\
+             & = 2m(d+1)\E^{-\frac{1}{2}\eps^2}                                                                                                                              \\
+             & = \delta.
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{lem}[bound of initial empirical risk]
+    Given $\delta\in(0,1)$, we have with probability at least $1-\delta$ over the choice of $\vtheta^0$
+    \begin{equation}
+        \RS(\vtheta^0)\leq\frac{1}{2}\left[1 + 2d\left(\log\frac{4m(d+1)}{\delta}\right)\left(2+3\sqrt{2\log(8/\delta)}\right)\kappa\sqrt{m}\right]^2.
+    \end{equation}
+\end{lem}
+\begin{proof}
+    Let
+    \begin{equation}
+        \fG = \{g_{\vx}(a,\vw) \mid g_{\vx}(a,\vw):=a\sigma(\vw^\T\vx),\vx\in\Omega \}.
+    \end{equation}
+    Lemma~\ref{lem..InitialParameter} implies that with probability at least $1-\delta/2$ over the choice of $\vtheta^0$, we have
+    \begin{equation}
+        \abs{g_{\vx}(a^0_k,\vw^0_k)}\leq d\abs{a_k^0}\norm{\vw^0_k}\leq 2d\log\frac{4m(d+1)}{\delta}
+    \end{equation}
+    Then
+    \begin{equation}
+        \begin{aligned}
+            \frac{1}{ m}\sup_{\vx\in\Omega}\abs{f_{\vtheta^0}(\vx)}
+             & =\sup_{\vx\in\Omega}\left\lvert \frac{1}{m}\sum_{k=1}^m a_k^0\sigma(\vw_k^0\cdot\vx)-\Exp_{(a,\vw)}a\sigma(\vw^\T\vx)\right\rvert \\
+             & \leq 2\Rad_{\vtheta^0}(\fG) + 6d \left(\log\frac{4m(d+1)}{\delta}\right)\sqrt{\frac{2\log(8/\delta)}{m}}.
+        \end{aligned}
+    \end{equation}
+    The Rademacher complexity can be estimated by
+    \begin{equation}
+        \begin{aligned}
+            \Rad_{\vtheta^0}(\fG)
+             & =\frac{1}{m}\Exp_{\tau}\left[\sup_{\vx\in\Omega}\sum_{k=1}^m\tau_ka^0_k\sigma(\vw^0_k\cdot\vx)\right]   \\
+             & \leq\frac{1}{m}\sqrt{2\log\frac{4m(d+1)}{\delta}}\Exp_{\tau}\left[\sup_{\vx\in\Omega}\sum_{k=1}^m\tau_k
+            \vw_k^0\cdot\vx\right]                                                                                     \\
+             & \leq\sqrt{2\log\frac{4m(d+1)}{\delta}}\sqrt{2d\log\frac{4m(d+1)}{\delta}}\frac{\sqrt{d}}{\sqrt{m}}      \\
+             & =\frac{2d\log\frac{4m(d+1)}{\delta}}{\sqrt{m}}.
+        \end{aligned}
+    \end{equation}
+    Therefore
+    \begin{equation}
+        \sup_{\vx\in\Omega}\abs{f_{\vtheta^0}(\vx)}\leq 2d\left(\log\frac{4m(d+1)}{\delta}\right)(2+3\sqrt{2\log(8/\delta)}\sqrt{m}),
+    \end{equation}
+    and
+    \begin{equation}
+        \begin{aligned}
+            \RS(\vtheta^0)
+             & \leq\frac{1}{2n}\sum_{i=1}^n{\left(1+\kappa\abs{f_{\vtheta}(\vx_i)}\right)}^2                                                    \\
+             & \leq\frac{1}{2}{\left[1+2d\left(\log\frac{4m(d+1)}{\delta}\right)\left(2+3\sqrt{2\log(8/\delta)}\kappa\sqrt{m}\right)\right]}^2.
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{rmk}
+    If $\gamma>\frac{1}{2}$, then $\kappa=o(\frac{1}{\sqrt{m}\log m})$ and $\RS(\vtheta^0)=O(1)$. One can use ASI trick to guarantee $\RS(\vtheta^0)\leq\frac{1}{2}$ for any $\kappa$.
+\end{rmk}
+Next we introduce sub-exponential norm of a random variable and the sub-exponential Bernstein's inequality.
+\begin{defi}[sub-exponential norm \cite{vershynin2018high}]
+    Let $\rX$ be a random variable. Its sub-exponential norm is defined as
+    \begin{equation}
+        \norm{\rX}_{\psi_1} := \inf\{s>0 \mid \Exp[\E^{\frac{\abs{\rX}}{s}}]\leq 2\}.
+    \end{equation}
+    In particular, we denote the sub-exponential norm of a $\chi^2(d)$ random variable $\rX$ by $C_{\psi,d}:=\norm{\rX}_{\psi_1}$. Here $\chi^2$ distribution with $d$ degrees of freedom has the probability density function
+    \begin{equation}
+        f_{\rX}(z)=\frac{1}{2^{d/2}\Gamma(d/2)}z^{d/2-1}\E^{-z/2}.
+    \end{equation}
+\end{defi}
+\begin{rmk}
+    We remark that by above definition $C_{\psi,d}<+\infty$ and $\Exp_{\rX\sim\chi^2(d)}\E^{\abs{\rX}/2}=+\infty$ implies $C_{\psi,d}\geq 2$.
+\end{rmk}
+\begin{rmk}
+    Suppose that $\vw\sim N(0,\mI_d)$, $a\sim N(0,1)$ and given $\vx_i,\vx_j \in\Omega$. Then we have
+    \begin{enumerate}
+        \item if $\rX:=\sigma(\vw^\T\vx_i)\sigma(\vx\cdot\vx_j)$ and $\rZ:=\norm{\vw}^2_2=\chi^2(d)$, then $\abs{\rX}\leq d\norm{\vw}^2_2=d\rZ$ and
+              \begin{equation}
+                  \begin{aligned}
+                      \norm{\rX}_{\psi_1}
+                       & =\inf\{s>0\mid\Exp_{\rX}\exp(\abs{\rX}/s)\leq 2\}                                                   \\
+                       & =\inf\{s>0\mid\Exp_{\vw}\exp\left(\abs{\sigma(\vw^\T\vx_i)\sigma(\vw^\T\vx_j)}/s\right)\leq 2\} \\
+                       & \leq\inf\{s>0\mid\Exp_{\vw}\exp(d\norm{\vw}^2_2/s)\leq 2\}                                          \\
+                       & =\inf\{s>0\mid\Exp_{\rZ}\exp(d\abs{rZ}/s)\leq 2\}                                                   \\
+                       & =d\inf\{s>0\mid\Exp_{\rZ}\exp(\abs{\rZ}/s)\leq 2\}                                                  \\
+                       & =d\norm{\chi^2(d)}_{\psi_1}                                                                         \\
+                       & \leq dC_{\psi,d}.
+                  \end{aligned}
+              \end{equation}
+        \item if $\rX:=a^2\sigma'(\vw^\T\vx_i)\sigma'(\vw^\T\vx_j)\vx_i\cdot\vx_j$ then $\abs{\rX}\leq d\abs{a}^2\leq d\rZ$ and $\norm{\rX}_{\psi_1}\leq dC_{\psi,d}$.
+    \end{enumerate}
+\end{rmk}
+\begin{thm}[sub-exponential Bernstein's inequality \cite{vershynin2018high}]\label{thm:sub_exp}
+    Suppose $\rX_1,\ldots,\rX_m$ are i.i.d.\ sub-exponential random variables with $\Exp\rX_1=\mu$, then for any $s\geq 0$ we have
+    \begin{equation}
+        \Prob\left(\Abs{\frac{1}{m}\sum_{k=1}^m\rX_k-\mu}\geq s\right)\leq 2\exp\left(-C_0 m \min\left(\frac{s^2}{\norm{\rX_1}^2_{\psi_1}},\frac{s}{\norm{\rX_1}_{\psi_1}}\right)\right),
+    \end{equation}
+    where $C_0$ is an absolute constant.
+\end{thm}
+\begin{lem}\label{lem:lambda_min}
+    For any $\delta\in(0,1)$ if $m\geq\frac{16n^2d^2C_{\psi,d}}{C_0\lambda^2}\log\frac{4n^2}{\delta}$ then with probability at least $1-\delta$ over the choice of $\vtheta^0$, we have
+    \begin{equation}
+        \lambda_{\min}\left(\mG(\vtheta^0)\right)\geq\frac{3}{4}\kappa^2\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right).
+    \end{equation}
+\end{lem}
+\begin{proof}
+    For any $\eps > 0$, we define
+    \begin{equation}
+        \begin{aligned}
+            \Omega_{ij}^{[a]}   & :=\left\{\vtheta^0 \mid \left\lvert \frac{\kappa'}{\kappa^2}G^{[a]}_{ij}(\vtheta^0) - K^{[a]}_{ij}\right\rvert \leq \frac{\eps}{n} \right\}        \\
+            \Omega_{ij}^{[\vw]} & := \left\{\vtheta^0 \mid \left\lvert \frac{1}{\kappa^2\kappa'}G^{[\vw]}_{ij}(\vtheta^0) - K^{[\vw]}_{ij}\right\rvert \leq \frac{\eps}{n} \right\}.
+        \end{aligned}
+    \end{equation}
+    Then from Theorem~\ref{thm:sub_exp} and Remark~\ref{lem:lambda_min} we know if $\frac{\eps}{ndC_{\psi,d}}\leq 1$ then
+    \begin{equation}
+        \begin{aligned}
+            \Prob(\Omega^{[a]}_{ij})   & \geq 1-2\exp\left(-\frac{mC_0\eps^2}{n^2d^2C_{\psi,d}^2}\right), \\
+            \Prob(\Omega^{(\vw)}_{ij}) & \geq 1-2\exp\left(-\frac{mC_0\eps^2}{n^2d^2C_{\psi,d}^2}\right),
+        \end{aligned}
+    \end{equation}
+    so with probability at least $\left[1-2\exp\left(-\frac{mC_0\eps^2}{n^2d^2C_{\psi,d}^2}\right)\right]^{2n^2} \geq 1-4n^2\exp\left(-\frac{mC_0\eps^2}{n^2d^2C_{\psi,d}^2}\right)$ over the choice of $\vtheta^0$, we have
+    \begin{equation}
+        \begin{aligned}
+             & \Norm{\frac{\kappa'}{\kappa^2}\mG^{[a]}(\vtheta^0) - \mK^{[a]}}_\mathrm{F} \leq \eps,      \\
+             & \Norm{\frac{1}{\kappa^2\kappa'}\mG^{[\vw]}(\vtheta^0) - \mK^{[\vw]}}_\mathrm{F} \leq \eps,
+        \end{aligned}
+    \end{equation}
+    Hence by taking $\eps=\lambda/4$, that is, $\delta=4n^2\exp\left(-\frac{mC_0\lambda^2}{16n^2d^2C_{\psi,d}^2}\right)$
+    \begin{equation}
+        \begin{aligned}
+            \lambda_{\min}\left(\mG(\vtheta^0)\right)
+             & \geq\lambda_{\min}\left(\mG^{[a]}(\vtheta^0)\right) + \lambda_{\min}\left(\mG^{[\vw]}(\vtheta^0)\right)                                   \\
+             & \geq\frac{\kappa^2}{\kappa'}\lambda_a-\frac{\kappa^2}{\kappa'} \Norm{\frac{\kappa'}{\kappa^2}\mG^{[a]}(\vtheta^0) - \mK^{[a]}}_\mathrm{F} \\
+             & \quad + \kappa^2\kappa'\lambda_{\vw} - \kappa^2\kappa'\Norm{\frac{1}{\kappa^2\kappa'}\mG^{[\vw]}(\vtheta^0) - \mK^{[\vw]}}_\mathrm{F}     \\
+             & \geq\frac{\kappa^2}{\kappa'}(\lambda_a-\eps)+\kappa^2\kappa'(\lambda_{\vw}-\eps)                                                          \\
+             & \geq\frac{3}{4}\kappa^2\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right).
+        \end{aligned}
+    \end{equation}
+\end{proof}
+
+\noindent In the following we denote
+\begin{equation}
+    t^* = \inf\{t \mid \vtheta(t)\notin \mathcal{N}(\vtheta^0)\},
+\end{equation}
+where
+\begin{equation}
+    \mathcal{N}(\vtheta^0) := \left\{\theta \mid \norm{\mG(\vtheta) - \mG(\vtheta^0)}_\mathrm{F}\leq \frac{1}{4}\kappa^2\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right)\right\}.
+\end{equation}
+Then we have the following lemma
+\begin{lem}\label{lem:exp_RS}
+    For any $\delta\in(0,1)$, if $m\geq\frac{16n^2d^2C_{\psi,d}^2}{\lambda^2C_0}\log\frac{4n^2}{\delta}$, then with probability at least $1-\delta$ over the choice of $\vtheta^0$, we have for any $t\in[0, t^*)$
+    \begin{equation}
+        \RS(\vtheta(t)) \leq \exp\left(-\frac{m\kappa^2}{n}\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right)\right)\RS(\vtheta^0).
+    \end{equation}
+\end{lem}
+\begin{proof}
+    Lemma~\ref{lem:lambda_min} implies that for any $\delta\in(0,1)$, with probability at least $1-\delta$ over the choice of $\vtheta^0$ and for any $\vtheta\in\mathcal{N}(\vtheta^0)$, we have
+    \begin{equation}
+        \begin{aligned}
+            \lambda_{\min}\left(\mG(\vtheta)\right)
+             & \geq \lambda_{\min}\left(\mG(\vtheta^0)\right) - \norm{\mG(\vtheta) - \mG(\vtheta^0)}_\mathrm{F}                                                                       \\
+             & \geq \frac{3}{4}\kappa^2\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right) - \frac{1}{4}\kappa^2\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right) \\
+             & = \frac{1}{2}\kappa^2\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right).
+        \end{aligned}
+    \end{equation}
+    Note that
+    \begin{equation}
+        G_{ij} = G_{ij}^{[a]}+G^{[\vw]}_{ij}=\frac{\kappa^2}{\kappa'm}\sum_{k=1}^m\nabla_{a_k}f_{\vtheta}(\vx_i)\cdot\nabla_{a_k}f_{\vtheta}(\vx_j)+\frac{\kappa^2\kappa'}{m}\sum_{k=1}^m\nabla_{\vw_k}f_{\vtheta}(\vx_i)\cdot\nabla_{\vw_k}f_{\vtheta}(\vx_j),
+    \end{equation}
+    and
+    \begin{equation}
+        \begin{aligned}
+            \nabla_{a_k}\RS(\vtheta)   & =\frac{1}{n}\sum_{i=1}^{n}e_i\kappa\nabla_{a_k}f_{\vtheta}(\vx_i),    \\
+            \nabla_{\vw_k}\RS(\vtheta) & = \frac{1}{n}\sum_{i=1}^{n}e_i\kappa\nabla_{\vw_k}f_{\vtheta}(\vx_i).
+        \end{aligned}
+    \end{equation}
+    Thus
+    \begin{equation}
+        \frac{m}{n^2}\ve^{\T}\mG\ve=\frac{1}{\kappa'}\sum_{k=1}^m\nabla_{a_k}\RS(\vtheta)\cdot\nabla_{a_k}\RS(\vtheta)+\kappa'\sum_{k=1}^m\nabla_{\vw_k}\RS(\vtheta)\cdot\nabla_{\vw_k}\RS(\vtheta).
+    \end{equation}
+    Then finally we get
+    \begin{equation}
+        \begin{aligned}
+            \frac{\D}{\D t}\RS(\vtheta(t))
+             & =-\left(\frac{1}{\kappa'}\sum_{k=1}^m\nabla_{a_k}\RS(\vtheta)\cdot\nabla_{a_k}\RS(\vtheta)+\kappa'\sum_{k=1}^m\nabla_{\vw_k}\RS(\vtheta)\cdot\nabla_{\vw_k}\RS(\vtheta)\right), \\
+             & =-\frac{m}{n^2}\ve^{\T}\mG\ve,                                                                                                                                                  \\
+             & \leq -\frac{2m}{n}\lambda_{\min}\left(\mG(\vtheta(t))\right)\RS(\vtheta(t))                                                                                                     \\
+             & \leq -\frac{m\kappa^2}{n}\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right)\RS(\vtheta(t)),
+        \end{aligned}
+    \end{equation}
+    and an integration yields the result.
+\end{proof}
+
+\begin{prop}\label{prop:a_w}
+    For any $\delta\in(0,1)$ if $m\geq\max\left\{\frac{16n^2d^2C_{\psi,d}^2}{\lambda^2C_0}\log\frac{8n^2}{\delta}, \frac{4\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)}\right\}$ then with probability at least $1-\delta$ over the choice of $\vtheta^0$, for any $t\in[0, t^\ast)$ and any $k\in [m]$,
+    \begin{equation}
+        \begin{aligned}
+            \max\limits_{k\in[m]}\abs{a_k(t) - a_k(0)}
+             & \leq 2\max\left\{\frac{1}{\kappa'},1\right\}\sqrt{2\log\frac{4m(d+1)}{\delta}}\frac{\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)}, \\
+            \max\limits_{k\in[m]}\norm{\vw_k(t) - \vw_k(0)}_{\infty}
+             & \leq 2\max\{
+            \kappa',1\}\sqrt{2\log\frac{4m(d+1)}{\delta}}\frac{\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)},
+        \end{aligned}
+    \end{equation}
+    and
+    \begin{equation}
+        \max\limits_{k\in[m]}\{\abs{a_k(0)},\;\norm{\vw_k(0)}_{\infty}\} \leq \sqrt{2\log\frac{4m(d+1)}{\delta}}.
+    \end{equation}
+\end{prop}
+\begin{proof}
+    Since
+    \begin{equation}
+        \alpha(t)=\max\limits_{k\in[m],s\in[0,t]}|a_k(s)|, \quad \omega(t)=\max\limits_{k\in[m],s\in[0,t]}\norm{\vw_k(s)}_{\infty},
+    \end{equation}
+    then
+    \begin{equation}
+        \begin{aligned}
+            \abs{\nabla_{a_k}\RS}^2    & =\left\lvert\frac{1}{n}\sum_{i=1}^n e_i\kappa\sigma(\vw_k^\T\vx_i)\right\rvert^2\leq 2\norm{\vw_k}^2_1\kappa^2\RS(\vtheta)\leq 2d^2(\omega(t))^2\kappa^2\RS(\vtheta),            \\
+            \norm{\nabla_{\vw_k}\RS}^2 & =\left\lVert\frac{1}{n}\sum_{i=1}^n e_i\kappa a_k\sigma'(\vw_k^\T\vx_i)\vx_i\right\rVert^2_{\infty}\leq 2\abs{a_k}^2\kappa^2\RS(\vtheta)\leq 2(\alpha(t))^2\kappa^2\RS(\vtheta).
+        \end{aligned}
+    \end{equation}
+    From Lemma~\ref{lem:exp_RS} if $m\geq \frac{16n^2d^2C_{\psi,d}^2}{\lambda^2C_0}\log\frac{8n^2}{\delta}$ then with probability at least $1 - \delta/2$ over the choice of $\vtheta^0$,
+    \begin{equation}
+        \begin{aligned}
+            \abs{a_k(t) - a_k(0)}
+             & \leq\frac{1}{\kappa'}\int_0^t\abs{\nabla_{a_k}\RS(\vtheta(s))}\diff{s}                                                                                                                   \\
+             & \leq\frac{\sqrt{2}d\kappa}{\kappa'}\int_{0}^{t} \omega(s)\sqrt{\RS(\vtheta(s))}\diff{s}                                                                                                  \\
+             & \leq\frac{\sqrt{2}d\kappa}{\kappa'}\omega(t)\int_{0}^{t}\sqrt{\RS(\vtheta^0)}\exp\left(-\frac{m\kappa^2}{2n}\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right)s\right)\diff{s} \\
+             & \leq \frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\kappa'\left(\lambda^{[a]}_S/\kappa'+\kappa'\lambda_{\vw}\right)}\omega(t)                                                           \\
+             & :=\frac{p}{\kappa'}\omega(t),
+        \end{aligned}
+    \end{equation}
+    where $p := \frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)}$. On the other hand,
+    \begin{equation}
+        \begin{aligned}
+            \norm{\vw_k(t) - \vw_k(0)}_{\infty}
+             & \leq \kappa'\int_{0}^{t} \norm{\nabla_{\vw_k}\RS(\vtheta(s))}_{\infty}\diff{s}                                                                                                     \\
+             & \leq \sqrt{2}\kappa\kappa' \int_{0}^t \alpha(s)\sqrt{\RS(\vtheta(s))} \diff{s}                                                                                                     \\
+             & \leq \sqrt{2}\kappa\kappa' \alpha(t) \int_{0}^{t} \sqrt{\RS(\vtheta^0)}\exp\left(-\frac{m\kappa^2}{2n}\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right)s\right)\diff{s} \\
+             & \leq \frac{2\sqrt{2}n\sqrt{\RS(\vtheta^0)}\kappa'}{m\kappa\left(\lambda^{[a]}_S/\kappa'+\kappa'\lambda_{\vw}\right)}\alpha(t)                                                      \\
+             & \leq p\kappa'\alpha(t).
+        \end{aligned}
+    \end{equation}
+    So
+    \begin{equation}
+        \begin{aligned}
+            \alpha(t) & \leq\alpha(0)+p\omega(t)\frac{1}{\kappa'}, \\
+            \omega(t) & \leq\omega(0)+p\alpha(t)\kappa',
+        \end{aligned}
+    \end{equation}
+    by Lemma~\ref{lem..InitialParameter} with probability at least $1 - \delta/2$ over the choice of $\vtheta^0$,
+    \begin{equation}
+        \max\limits_{k\in[m]}\{\abs{a_k(0)},\;\norm{\vw_k(0)}_{\infty}\}\leq \sqrt{2\log\frac{4m(d+1)}{\delta}}.
+    \end{equation}
+    Since
+    \begin{equation}
+        m \geq \frac{4\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)},
+    \end{equation}
+    so we have
+    \begin{equation}
+        p=\frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)}\leq \frac{1}{2},
+    \end{equation}
+    and then
+    \begin{equation}
+        \alpha(t)\leq\alpha(0)+\frac{p}{\kappa'}\omega(0)+p^2\alpha(t),
+    \end{equation}
+    thus
+    \begin{equation}
+        \alpha(t)\leq\frac{4}{3}\alpha(0)+\frac{2}{3}\frac{1}{\kappa'}\omega(0),
+    \end{equation}
+    so
+    \begin{equation}
+        \alpha(t)\leq 2\max\{1,\frac{1}{\kappa'}\}\sqrt{2\log\frac{4m(d+1)}{\delta}}.
+    \end{equation}
+    Similarly, one can obtain the estimate of $\omega(t)$ as
+    \begin{equation}
+        \omega(t)\leq 2\max\{1,\kappa'\}\sqrt{2\log\frac{4m(d+1)}{\delta}}.
+    \end{equation}
+    Finally we have for any $t\in[0, t^*)$ with probability at least $1-\delta$ over the choice of $\vtheta^0$,
+    \begin{equation}
+        \begin{aligned}
+            \max\limits_{k\in[m]}|a_k(t) - a_k(0)|
+             & \leq 2\max\left\{\frac{1}{\kappa'},1\right\}\sqrt{2\log\frac{4m(d+1)}{\delta}}p, \\
+            \max\limits_{k\in[m]}\norm{\vw_k(t) - \vw_k(0)}_{\infty}
+             & \leq 2\max\{
+            \kappa',1\}\sqrt{2\log\frac{4m(d+1)}{\delta}}p,
+        \end{aligned}
+    \end{equation}
+    which ends the proof.
+\end{proof}
+
+To show our main results with $\gamma'>\gamma-1$, we further define
+\begin{equation}
+    t^*_a=\inf\{t\mid \vtheta(t)\in\fN_a(\vtheta^0)\}, \quad t^*_{\vw}=\inf\{t\mid \vtheta(0)\in\fN_{\vw}(\vtheta^0)\},
+\end{equation}
+where
+\begin{equation}
+    \begin{aligned}
+        \fN_a(\vtheta^0)     & :=\{\vtheta\mid\norm{\mG^{[a]}(\vtheta)-\mG^{[a]}(\vtheta^0)}_\mathrm{F}\leq\frac{1}{4}\frac{\kappa^2}{\kappa'}\lambda_a\}, \\
+        \fN_{\vw}(\vtheta^0) & :=\{\vtheta\mid\norm{\mG^{[\vw]}(\vtheta)-\mG^{[\vw]}(\vtheta^0)}_\mathrm{F}\leq\frac{1}{4}\kappa^2\kappa'\lambda_{\vw}\}.
+    \end{aligned}
+\end{equation}
+
+\begin{lem}\label{lem:exp_a}
+    Given $\delta\in(0,1)$, if $m\geq\frac{16n^2d^2C_{\psi,d}^2}{C_0\lambda_a^2}\log\frac{2n^2}{\delta}$, then we have with probability at least $1-\delta$ over the choice of $\vtheta^0$,
+    \begin{equation}
+        \lambda_{\min}\left(\mG^{[a]}(\vtheta^0)\right)\geq\frac{3}{4}\frac{\kappa^2}{\kappa'}\lambda_a.
+    \end{equation}
+\end{lem}
+\begin{proof}
+    For any $\eps>0$ define
+    \begin{equation}
+        \Omega_{ij}^{[a]}:=\left\{\vtheta^0\mid\left|\frac{\kappa'}{\kappa^2}G_{ij}^{[a]}(\vtheta^0)-K_{ij}^{[a]}\right|\leq\frac{\eps}{n}\right\}.
+    \end{equation}
+    By Theorem~\ref{thm:sub_exp} and Remark~\ref{lem:lambda_min}, if $\frac{\eps}{ndC_{\psi,d}}\leq 1$ then
+    \begin{equation}
+        \Prob(\Omega_{ij}^{[a]}) \geq 1-2\exp\left(-\frac{mC_0\eps^2}{n^2d^2C^2_{\psi,d}}\right),
+    \end{equation}
+    with probability at least
+    \begin{equation}
+        \left[1-2\exp\left(-\frac{mC_0\eps^2}{n^2 d^2 C^2_{\psi,d}}\right)\right]^{n^2}\geq 1-2n^2\exp\left(-\frac{mC_0\eps^2}{n^2 d^2 C^2_{\psi,d}}\right),
+    \end{equation}
+    we have
+    \begin{equation}
+        \Norm{\frac{\kappa'}{\kappa^2}\mG^{[a]}(\vtheta^0)-\mK^{[a]}}_\mathrm{F}\leq\eps.
+    \end{equation}
+    Taking $\eps=\lambda_a/4$, i.e., $\delta=2n^2\exp\left(-\frac{mC_0\lambda_a^2}{16n^2d^2C^2_{\psi,d}}\right)$,
+    \begin{equation}
+        \begin{aligned}
+            \lambda_{\min}(\mG^{[a]}(\vtheta^0)
+             & \geq \frac{\kappa^2}{\kappa'}\lambda_a-\frac{\kappa^2}{\kappa'}\norm{\frac{\kappa'}{\kappa^2}\mG^{[a]}(\vtheta^0)-\mK^{[a]}}_\mathrm{F} \\
+             & \geq \frac{\kappa^2}{\kappa'}\left(\lambda_a-\eps\right)                                                                            \\
+             & \geq\frac{3}{4}\frac{\kappa^2}{\kappa'}\lambda_a.
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{prop}
+    For any $\delta\in(0,1)$, if $m\geq\frac{16n^2d^2C_{\psi,d}^2}{C_0\lambda_a^2}\log\frac{2n^2}{\delta}$ then with probability at least $1-\delta$ over the choice of $\vtheta^0$, for $t\in[0,t^*_a)$,
+    \begin{equation}
+        \RS(\vtheta(t))\leq\exp\left(-\frac{m\kappa^2}{\kappa'n}\lambda_at\right)\RS(\vtheta^0).
+    \end{equation}
+\end{prop}
+\begin{proof}
+    By Lemma~\ref{lem:exp_a}, for any $\delta\in(0,1)$ with probability $1-\delta$ over the choice of $\vtheta^0$ and for any $\vtheta\in\fN_a(\vtheta^0)$,
+    \begin{equation}
+        \begin{aligned}
+            \lambda_{\min}(\mG^{[a]}(\vtheta))
+             & \geq\lambda_{\min}(\mG^{[a]}(\vtheta^0))-\norm{\mG(\vtheta)-\mG(\vtheta^0)}_\mathrm{F} \\
+             & \geq \frac{3}{4}\frac{\kappa^2}{\kappa'}\lambda_a-\frac{1}{4}\frac{\kappa^2}{\kappa'}\lambda_a   \\
+             & = \frac{1}{2}\frac{\kappa^2}{\kappa'}\lambda_a.
+        \end{aligned}
+    \end{equation}
+    \begin{equation}
+        \begin{aligned}
+            \frac{\D}{\D t}\RS(\vtheta(t))
+             & = -\frac{m}{n^2}\ve^{\T}\mG\ve                                                          \\
+             & \leq -\frac{m}{n^2}\ve^{\T}\mG^{[a]}\ve                                                 \\
+             & \leq -\frac{2m}{n}\lambda_{\min}\left(\mG^{[a]}(\vtheta(t))\right)\RS(\vtheta(t)) \\
+             & \leq -\frac{m\kappa^2}{\kappa'n}\lambda_a\RS(\vtheta(t)).
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{prop}
+    For any $\delta\in(0,1)$ if $m\geq\frac{16n^2d^2C^2_{\psi,d}}{C_0\lambda_a^2}\log\frac{4n^2}{\delta}$ and $\frac{m\kappa}{\kappa'}\geq\frac{4\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{\lambda_a}$ and $\kappa'\leq 1$, then with probability at least $1-\delta$ over the choice of $\vtheta^0$ and for any $t\in[0,t^*_a)$, $k\in[m]$,
+    \begin{equation}
+        \begin{aligned}
+            \max\limits_{k\in[m]}\abs{a_k(t) - a_k(0)}
+             & \leq 2\frac{1}{\kappa'}\sqrt{2\log\frac{4m(d+1)}{\delta}}p_a, \\
+            \max\limits_{k\in[m]}\norm{\vw_k(t) - \vw_k(0)}_{\infty}
+             & \leq 2\sqrt{2\log\frac{4m(d+1)}{\delta}}p_a,
+        \end{aligned}
+    \end{equation}
+    and
+    \begin{equation}
+        \max\limits_{k\in[m]}\{\abs{a_k(0)},\;\norm{\vw_k(0)}_{\infty}\} \leq \sqrt{2\log\frac{4m(d+1)}{\delta}},
+    \end{equation}
+    where $p_a=\frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\lambda_a/\kappa'}$.
+\end{prop}
+\begin{proof}
+    Since
+    \begin{equation}
+        \alpha(t)=\max\limits_{k\in[m],s\in[0,t]}|a_k(s)|, \quad \omega(t)=\max\limits_{k\in[m],s\in[0,t]}\norm{\vw_k(s)}_{\infty},
+    \end{equation}
+    then
+    \begin{equation}
+        \begin{aligned}
+            \abs{\nabla_{a_k}\RS}^2    & =\left\lvert\frac{1}{n}\sum_{i=1}^n e_i\kappa\sigma(\vw_k^\T\vx_i)\right\rvert^2\leq 2\norm{\vw_k}^2_1\kappa^2\RS(\vtheta)\leq 2d^2(\omega(t))^2\kappa^2\RS(\vtheta),            \\
+            \norm{\nabla_{\vw_k}\RS}^2 & =\left\lVert\frac{1}{n}\sum_{i=1}^n e_i\kappa a_k\sigma'(\vw_k^\T\vx_i)\vx_i\right\rVert^2_{\infty}\leq 2\abs{a_k}^2\kappa^2\RS(\vtheta)\leq 2(\alpha(t))^2\kappa^2\RS(\vtheta).
+        \end{aligned}
+    \end{equation}
+    From Lemma~\ref{lem:exp_RS} if $m\geq \frac{16n^2d^2C_{\psi,d}^2}{\lambda^2C_0}\log\frac{8n^2}{\delta}$ then with probability at least $1 - \delta/2$,
+    \begin{equation}
+        \begin{aligned}
+            \abs{a_k(t) - a_k(0)}
+             & \leq\frac{1}{\kappa'}\int_0^t\abs{\nabla_{a_k}\RS(\vtheta(s))}\diff{s}                                                                                                                \\
+             & \leq\frac{\sqrt{2}d\kappa}{\kappa'}\int_{0}^{t} \omega(s)\sqrt{\RS(\vtheta(s))}\diff{s}                                                                                                     \\
+             & \leq\frac{\sqrt{2}d\kappa}{\kappa'}\omega(t)\int_{0}^{t}\sqrt{\RS(\vtheta^0)}\exp\left(-\frac{m\kappa^2}{2n}\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right)s\right)\diff{s} \\
+             & \leq \frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\kappa'\left(\lambda^{[a]}_S/\kappa'+\kappa'\lambda_{\vw}\right)}\omega(t)                                                        \\
+             & =\frac{p_a}{\kappa'}\omega(t),
+        \end{aligned}
+    \end{equation}
+    where $p_a := \frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\lambda_a/\kappa'}$. On the other hand,
+    \begin{equation}
+        \begin{aligned}
+            \norm{\vw_k(t) - \vw_k(0)}_{\infty}
+             & \leq \kappa'\int_{0}^{t} \norm{\nabla_{\vw_k}\RS(\vtheta(s))}_{\infty}\diff{s}                                                                                                  \\
+             & \leq \sqrt{2}\kappa\kappa' \int_{0}^t \alpha(s)\sqrt{\RS(\vtheta(s))} \diff{s}                                                                                                        \\
+             & \leq \sqrt{2}\kappa\kappa' \alpha(t) \int_{0}^{t} \sqrt{\RS(\vtheta^0)}\exp\left(-\frac{m\kappa^2}{2n}\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right)s\right)\diff{s} \\
+             & \leq \frac{2\sqrt{2}n\sqrt{\RS(\vtheta^0)}\kappa'}{m\kappa\left(\lambda^{[a]}_S/\kappa'+\kappa'\lambda_{\vw}\right)}\alpha(t)                                                   \\
+             & \leq p_a\kappa'\alpha(t).
+        \end{aligned}
+    \end{equation}
+    So
+    \begin{equation}
+        \begin{aligned}
+            \alpha(t) & \leq\alpha(0)+p_a\omega(t)\frac{1}{\kappa'}, \\
+            \omega(t) & \leq\omega(0)+p_a\alpha(t)\kappa',
+        \end{aligned}
+    \end{equation}
+    by Lemma~\ref{lem..InitialParameter} with probability at least $1 - \delta/2$
+    \begin{equation}
+        \max\limits_{k\in[m]}\{\abs{a_k(0)},\;\norm{\vw_k(0)}_{\infty}\}\leq\sqrt{2\log\frac{4m(d+1)}{\delta}}.
+    \end{equation}
+    Since
+    \begin{equation}
+        m \geq \frac{4\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)},
+    \end{equation}
+    so we have
+    \begin{equation}
+        p_a=\frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\lambda_a/\kappa'}\leq \frac{1}{2},
+    \end{equation}
+    and then
+    \begin{equation}
+        \alpha(t)\leq\alpha(0)+\frac{p_a}{\kappa'}\omega(0)+p_a^2\alpha(t),
+    \end{equation}
+    thus
+    \begin{equation}
+        \alpha(t)\leq\frac{4}{3}\alpha(0)+\frac{2}{3}\frac{1}{\kappa'}\omega(0),
+    \end{equation}
+    so
+    \begin{equation}
+        \alpha(t)\leq 2\frac{1}{\kappa'}\sqrt{2\log\frac{4m(d+1)}{\delta}}.
+    \end{equation}
+    Similarly, one can obtain the estimate of $\omega(t)$ as
+    \begin{equation}
+        \omega(t)\leq 2\sqrt{2\log\frac{4m(d+1)}{\delta}}.
+    \end{equation}
+    Finally we have for $\forall t\in[0, t^*_a)$ with probability at least $1-\delta$,
+    \begin{equation}
+        \begin{aligned}
+            \max\limits_{k\in[m]}|a_k(t) - a_k(0)|
+             & \leq 2\frac{1}{\kappa'}\sqrt{2\log\frac{4m(d+1)}{\delta}}p_a, \\
+            \max\limits_{k\in[m]}\norm{\vw_k(t) - \vw_k(0)}_{\infty}
+             & \leq 2\sqrt{2\log\frac{4m(d+1)}{\delta}}p_a,
+        \end{aligned}
+    \end{equation}
+    which ends the proof.
+\end{proof}
+\section{Proof of Theorem \ref{thm..LinearRegime}}
+We further divide the linear regime into two part: $\gamma<1$ where the training dynamics is $\vtheta$-lazy and $\gamma'>\gamma-1$ where the training dynamics is $\vw$-lazy. Theorem \ref{thm..LinearRegime} is hence covered by Proposition \ref{prop..ThetaLazyRegime} and Proposition \ref{prop..WLazyRegime} whose proofs are given in this section.
+\begin{prop}[$\vtheta$-lazy training]\label{prop..ThetaLazyRegime}
+    Given $\delta\in(0,1)$ and the sample set $S = {\{(\vx_i, y_i)\}}_{i=1}^n\subset\Omega$ with $\vx_i$'s drawn i.i.d.\ from some unknown distribution $\fD$. Suppose that Assumption~\ref{assump..lambda} and Assumption~\ref{assump..gammagamma'} hold. Then for sufficiently large $m$ and with probability at least $1-\delta$ over the choice of $\vtheta^0$, we have for $\gamma<1$ (ASI should be used if $\gamma\leq\frac{1}{2}$),
+    \begin{enumerate}[(a)]
+        \item $\sup\limits_{t\in[0,+\infty)}\norm{\vtheta(t)-\vtheta^0}_2\lesssim\frac{1}{\sqrt{m}\kappa}\log m$.
+        \item $\RS(\vtheta(t))\leq \exp\left(-\frac{2m\kappa^2\lambda t}{n}\right)\RS(\vtheta^0)$. \\
+              Moreover, we have with probability at least $1-\delta-2\exp\left(-\frac{C_0m(d+1)}{4C^2_{\psi,1}}\right)$.
+        \item $\sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta(t)-\vtheta^0}_2}{\norm{\vtheta^0}_2}\lesssim\frac{1}{m\kappa}\log m$.
+    \end{enumerate}
+\end{prop}
+\begin{proof}
+    Let $t\in[0,t^*)$, $p=\frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)}$ and $\xi=\sqrt{2\log\frac{8m(d+1)}{\delta}}$.
+    \begin{enumerate}[(a)]
+        \item From Proposition~\ref{prop:a_w} we have with probability at least $1-\delta/2$
+              \begin{equation}
+                  \begin{aligned}
+                      \sup\limits_{t\in[0,t^*]}\norm{\vtheta(t)-\vtheta^0}_2
+                       & \leq \left[m(d+1)\left(2\sqrt{2\log\frac{8m(d+1)}{\delta}}\frac{\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)}\right)^2\right]^{\frac{1}{2}}      \\
+                       & =\max\left\{\kappa',\frac{1}{\kappa'}\right\}\sqrt{m(d+1)}2\sqrt{2\log\frac{8m(d+1)}{\delta}}\frac{\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)} \\
+                       & \leq\max\left\{\kappa',\frac{1}{\kappa'}\right\}\frac{4\sqrt{d+1}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\sqrt{m}\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)}   \\
+                       & \leq\frac{4\sqrt{d+1}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\sqrt{m}\kappa\lambda}                                                                                           \\
+                       & \lesssim \frac{1}{\sqrt{m}\kappa}\log m,
+                  \end{aligned}
+              \end{equation}
+              where we use the fact
+              \begin{equation}
+                  \frac{\max\left\{\kappa',\frac{1}{\kappa'}\right\}}{\lambda_a/\kappa'+\kappa'\lambda_{\vw}}\leq\max\left\{\frac{\kappa'}{\kappa'\lambda_{\vw}},\frac{1/\kappa'}{\lambda_a/\kappa'}\right\}\leq\frac{1}{\lambda}.
+              \end{equation}
+        \item The linear convergence rate is essentially proved by Lemma~\ref{lem:exp_RS} with $t^* = +\infty$. We divide the proof into the following three steps. In particular, $t^*=+\infty$ is proved in the step (iii).
+              \begin{enumerate}[(i)]
+                  \item Let
+                        \begin{equation}
+                            g^{[a]}_{ij}(\vw) := \sigma(\vw^\T\vx_i)\sigma(\vw^\T\vx_j),
+                        \end{equation}
+                        then
+                        \begin{equation}
+                            \Abs{G_{ij}^{[a]}(\vtheta(t)) - G_{ij}^{[a]}(\vtheta(0))} \leq \frac{\kappa^2}{m\kappa'}\sum_{k=1}^m \Abs{g^{[a]}_{ij}(\vw_k(t)) - g^{[a]}_{ij}(\vw_k(0))}.
+                        \end{equation}
+                        By mean value theorem, for somce $c\in(0,1)$,
+                        \begin{equation}
+                            \Abs{g^{[a]}_{ij}(\vw_k(t)) - g^{[a]}_{ij}(\vw_k(0))} \leq \norm{\nabla g_{ij}\left(c\vw_k(t) + (1-c)\vw_k(0)\right)}_{\infty}\norm{\vw_k(t) - \vw_k(0)}_1,
+                        \end{equation}
+                        where
+                        \begin{equation}
+                            \nabla g_{ij}^{[a]}(\vw)=\sigma'(\vw\cdot\xi_i)\sigma(\vw^\T\vx_j)\vx_i+\sigma(\vw^\T\vx_i)\sigma'(\vw^\T\vx_j)\vx_j,
+                        \end{equation}
+                        and
+                        \begin{equation}
+                            \norm{\nabla g_{ij}^{[a]}(\vw)}_{\infty}\leq 2\norm{\vw}_1.
+                        \end{equation}
+                        From Proposition~\ref{prop:a_w} we have with probability at least $1-\delta/2$
+                        \begin{align}
+                            \norm{\vw_k(t)-\vw_k(0)}_{\infty} & \leq p\alpha(t)\kappa'\leq 2\max\{\kappa',1\}\xi p, \\
+                            \norm{\vw_k(t)-\vw_k(0)}_1        & \leq 2d\max\{\kappa',1\}\xi p,
+                        \end{align}
+                        so
+                        \begin{equation}
+                            \begin{aligned}
+                                \norm{c\vw_k(t) + (1-c)\vw_k(0)}_1
+                                 & \leq d\left(\norm{\vw_k(0)}_{\infty} + \norm{\vw_k(t) - \vw_k(0)}_{\infty}\right) \\
+                                 & \leq d\left(\xi+2\max\{\kappa',1\}\xi p\right)                                    \\
+                                 & \leq 2d\xi\max\{\kappa',1\}.
+                            \end{aligned}
+                        \end{equation}
+                        Then
+                        \begin{equation}
+                            \abs{G_{ij}^{[a]}(\vtheta(t)) - G_{ij}^{[a]}(\vtheta(0))} \leq 8d^2\kappa^2\xi^2\max\left\{\kappa',\frac{1}{\kappa'}\right\}p,
+                        \end{equation}
+                        and
+                        \begin{equation}
+                            \begin{aligned}
+                                \norm{\mG^{[a]}(\vtheta(t)) - \mG^{[a]}(\vtheta(0))}_\mathrm{F}
+                                 & \leq 8d^2n\kappa^2\max\left\{\kappa',\frac{1}{\kappa'}\right\}\left(2\log\frac{8m(d+1)}{\delta}\right)\frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)} \\
+                                 & \leq\kappa\max\left\{\kappa',\frac{1}{\kappa'}\right\}\frac{32\sqrt{2}d^3n^2\left(\log\frac{8m(d+1)}{\delta}\right)\sqrt{\RS(\vtheta^0)}}{m\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)}.
+                            \end{aligned}
+                        \end{equation}
+                        If we choose
+                        \begin{equation}\label{cond:m1}
+                            m\kappa\geq\frac{128\sqrt{2}d^3n^2\left(\log\frac{8m(d+1)}{\delta}\right)\sqrt{\RS(\vtheta^0)}}{\lambda^2},
+                        \end{equation}
+                        then noticing that
+                        \begin{equation}
+                            \begin{aligned}
+                                \frac{1}{\lambda^2}
+                                 & \geq\frac{1}{\left(4\left(\frac{1}{27}(\lambda_a)^3\lambda_{\vw}\right)^{1/4}\right) ^2} \\
+                                 & \geq\frac{1}{\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)^2\kappa'}               \\
+                                 & =\frac{1}{\left(\lambda_a/\sqrt{\kappa'}+(\kappa')^{3/2}\lambda_{\vw}\right)^2},
+                            \end{aligned}
+                        \end{equation}
+                        and
+                        \begin{equation}
+                            \begin{aligned}
+                                \frac{1}{\lambda^2}
+                                 & \geq\frac{1}{\left(4\left(\frac{1}{27}\lambda_a(\lambda_{\vw})^3\right)^{1/4}\right) ^2} \\
+                                 & \geq\frac{\kappa'}{\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)^2}                \\
+                                 & =\frac{1}{\left(\lambda_a/(\kappa')^{3/2}+\sqrt{\kappa'}\lambda_{\vw}\right)^2},
+                            \end{aligned}
+                        \end{equation}
+                        we have
+                        \begin{equation}
+                            m\kappa\geq \max\left\{\kappa',\frac{1}{\kappa'}\right\}\frac{256\sqrt{2}d^3n^2\left(\log\frac{8m(d+1)}{\delta}\right)\sqrt{\RS(\vtheta^0)}}{\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)^2},
+                        \end{equation}
+                        so
+                        \begin{equation}\label{thm-proof:step1}
+                            \norm{\mG^{[a]}(\vtheta(t)) - \mG^{[a]}(\vtheta(0))}_\mathrm{F}\leq\frac{1}{8}\kappa^2\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right).
+                        \end{equation}
+                  \item Define
+                        \begin{equation}
+                            \begin{aligned}
+                                D_{i,k}=\{\omega_k(0)\mid \norm{\vw_k(t)-\vw_k(0)}_{\infty} & \leq 2\xi\max\{\kappa',1\} p,                                    \\
+                                                                                            & \sigma'(\vw_k(t^*)\cdot\vx_i)\not=\sigma'(\vw_k(0)\cdot\vx_i)\}.
+                            \end{aligned}
+                        \end{equation}
+                        If $\abs{\vw_k(0)\cdot\vx_i}>4d\max\{\kappa',1\}\xi p$, then
+                        \begin{equation}
+                            \abs{\vw_k(t)\cdot\vx_i-\vw_k(0)\cdot\vx_i}\leq\norm{\vx_i}_1\norm{\vw_k(t)-\vw_k(0)}_{\infty}\leq2d\sqrt{2\log\frac{8m(d+1)}{\delta}} p,
+                        \end{equation}
+                        thus $\vw_k(t)\cdot\vx_i$ and $\vw_k(0)\cdot\vx_i$ have the same sign which means $D_{i,k}$ is empty. Recall that $\vx_i\in[0, 1]^d$ with $(\vx_i)_d=1$, then $\norm{\vx_i}_2\geq 1$. Let $\hat{\vx}_i=\frac{\vx_i}{\norm{\vx_i}_2}$ then $\abs{\vw_k(0)\cdot\vx_i}\geq\abs{\vx_k(0)\cdot\hat{\vx}_i}$ and
+                        \begin{equation}
+                            \begin{aligned}
+                                \Prob(D_{i,k})
+                                 & \leq\Prob(|\vw_k(0)\cdot\vx_i|\leq 4d\max\{\kappa',1\}\xi p)                         \\
+                                 & \leq\Prob(|\vw_k(0)\cdot\hat{\vx}_i|\leq 4d\max\{\kappa',1\}\xi p)                   \\
+                                 & = \Prob(|\vw_k(0)\cdot(1,0,0,\ldots,0)^{\T}|\leq 4d\max\{\kappa',1\}\xi p)           \\
+                                 & = \Prob(|(\vw_k(0))_1|\leq 4d\max\{\kappa',1\}\xi p)                                 \\
+                                 & = 2\int_0^{4d\max\{\kappa',1\}\xi p}\frac{1}{\sqrt{2\pi}}\E^{-\frac{x^2}{2}}\diff{x} \\
+                                 & \leq \frac{8}{\sqrt{2\pi}}d\max\{\kappa',1\}\xi p                                    \\
+                                 & \leq 4d\max\{\kappa',1\}\xi p.
+                            \end{aligned}
+                        \end{equation}
+                        Then
+                        \begin{equation}
+                            \begin{aligned}
+                                \abs{G^{[\vw]}_{ij}(\vtheta(t))-G^{[\vw]}_{ij}(\vtheta(0))}
+                                 & \leq \frac{\kappa^2\kappa'\abs{\vx_i\cdot\vx_j}}{m}\sum_{k=1}^m\Big|a_k^2(t^*)\sigma'(\vw_k(t)\cdot\vx_i)\sigma'(\vw_k(t)\cdot\vx_j) \\
+                                 & \quad\quad\quad\quad\quad\quad\quad\quad -a_k^2(0)\sigma'(\vw_k(0)\cdot\vx_i)\sigma'(\vw_k(0)\cdot\vx_j)\Big|                        \\
+                                 & \leq \frac{\kappa^2\kappa'd}{m}\sum_{k=1}^m\left[a_k^2(t)\abs{D_{k,i,j}}+|a_k^2(t)-a_k^2(0|\right],
+                            \end{aligned}
+                        \end{equation}
+                        where
+                        \begin{equation}
+                            D_{k,i,j}:=\sigma'(\vw_k(t)\cdot\vx_i)\sigma'(\vw_k(t)\cdot\vx_j)-\sigma'(\vw_k(0)\cdot\vx_i)\sigma'(\vw_k(0)\cdot\vx_j),
+                        \end{equation}
+                        then
+                        \begin{equation}
+                            \Exp|D_{k,i,j}|\leq\Prob(D_{k,i}\cup D_{k,j})\leq 8d\max\{\kappa',1\}\xi p.
+                        \end{equation}
+                        At the same time
+                        \begin{equation}
+                            \begin{aligned}
+                                \abs{a_k^2(t)-a_k^2(0)}
+                                 & \leq\abs{a_k(t)-a_k(0)}^2+2\abs{a_k(0)}\abs{a_k(t)-a_k(0)}                                                                     \\
+                                 & \leq \left(2\max\left\{\frac{1}{\kappa'},1\right\}\xi p\right)^2+2\xi\left(2\max\left\{\frac{1}{\kappa'},1\right\}\xi p\right) \\
+                                 & \leq 6\xi^2\max\left\{\frac{1}{\kappa'^2},1\right\}p,
+                            \end{aligned}
+                        \end{equation}
+                        so
+                        \begin{equation}
+                            \begin{aligned}
+                                a_k^2(t)\leq \abs{a_k^2(t)-a_k^2(0)}+a_k^2(0)
+                                 & \leq \left(2\max\left\{\frac{1}{\kappa'},1\right\}\xi p\right)^2+2\xi\left(2\max\left\{\frac{1}{\kappa'},1\right\}\xi p\right) + \xi^2 \\
+                                 & \leq 4\max\left\{\frac{1}{\kappa'^2},1\right\}\xi^2.
+                            \end{aligned}
+                        \end{equation}
+                        Then
+                        \begin{equation}
+                            \begin{aligned}
+                                \Exp\sum_{i,j=1}^n\Abs{G_{ij}^{[\vw]}(\vtheta(t))-G_{ij}^{[\vw]}(\vtheta(0))}
+                                 & \leq\sum_{i,j=1}^n\frac{\kappa^2\kappa' d}{m}\sum_{k=1}^m\left(4\max\left\{\frac{1}{\kappa'^2},1\right\}\xi^2\Exp|D_{k,i,j}|+6\max\left\{\frac{1}{\kappa'^2},1\right\}\xi^2 p\right)           \\
+                                 & \leq\sum_{i,j=1}^n\frac{\kappa^2\kappa' d}{m}\sum_{k=1}^m\left(4\max\left\{\frac{1}{\kappa'^2},1\right\}\xi^2 8d\max\{\kappa',1\}\xi p+6\max\left\{\frac{1}{\kappa'^2},1\right\}\xi^2 p\right) \\
+                                 & \leq \kappa^2\kappa' d n^2\left(32d\xi\max\{\kappa',\frac{1}{\kappa'^2} \}   +6\max\left\{\frac{1}{\kappa'^2},1\right\}\right)\xi^2 p                                               \\
+                                 & \leq 40\kappa^2 d^2n^2\left(2\log\frac{8m(d+1)}{\delta}\right)^{3/2}\max\{\kappa'^2,\frac{1}{\kappa'}\} p.
+                            \end{aligned}
+                        \end{equation}
+                        By Markov inequality, with probability at least $1-\delta/2$ over the choice of $\vtheta^0$, we have
+                        \begin{equation}
+                            \begin{aligned}
+                                \norm{G^{[\vw]}(\vtheta(t))-G^{[\vw]}(\vtheta(0))}_\mathrm{F}
+                                 & \leq \sum_{i,j=1}^n\Big|G_{ij}^{(\vw)}(\vtheta(t))-G^{[\vw]}_{ij}(\vtheta(0))\Big|                                                                                                                                                 \\
+                                 & \leq \max\{\kappa'^2,\frac{1}{\kappa'}\}\frac{40\kappa^2 d^2n^2\left(2\log\frac{8m(d+1)}{\delta}\right)^{3/2} p}{\delta/2}                                                                                                         \\
+                                 & \leq \max\{\kappa'^2,\frac{1}{\kappa'}\}\frac{80\kappa^2 d^2n^2 2\sqrt{2}}{\delta}\left(\log\frac{8m(d+1)}{\delta}\right)^{3/2}\frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)} \\
+                                 & \leq\kappa\max\{\kappa'^2,\frac{1}{\kappa'}\}\frac{640 d^3n^3\left(\log\frac{8m(d+1)}{\delta}\right)^{3/2}\sqrt{\RS(\vtheta^0)}\delta^{-1}}{m\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)}.
+                            \end{aligned}
+                        \end{equation}
+                        If
+                        \begin{equation}
+                            m\geq\frac{5120\delta^{-1}d^3n^3\left(\log\frac{8m(d+1)}{\delta}\right)^{3/2}\sqrt{\RS(\vtheta^0)}}{\lambda^2},
+                        \end{equation}
+                        then noticing that
+                        \begin{equation}
+                            \begin{aligned}
+                                \frac{1}{\lambda^2}
+                                 & \geq\frac{1}{\left(4\left(\frac{1}{27}(\lambda_a)^3\lambda_{\vw}\right)^{1/4}\right) ^2} \\
+                                 & \geq\frac{1}{\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)^2\kappa'}               \\
+                                 & =\frac{1}{\left(\lambda_a/\sqrt{\kappa'}+(\kappa')^{3/2}\lambda_{\vw}\right)^2},
+                            \end{aligned}
+                        \end{equation}
+                        and
+                        \begin{equation}
+                            \begin{aligned}
+                                \frac{1}{\lambda^2}
+                                 & \geq\frac{1}{\left(4\left(\frac{1}{27}\lambda_a(\lambda_{\vw})^3\right)^{1/4}\right) ^2} \\
+                                 & \geq\frac{\kappa'}{\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)^2}                \\
+                                 & =\frac{1}{\left(\lambda_a/(\kappa')^{3/2}+\sqrt{\kappa'}\lambda_{\vw}\right)^2},
+                            \end{aligned}
+                        \end{equation}
+                        we have
+                        \begin{equation}\label{thm-proof:step2}
+                            \norm{G^{[\vw]}(\vtheta(t))-G^{[\vw]}(\vtheta(0))}_\mathrm{F}\leq\frac{1}{8}\kappa^2\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right)
+                        \end{equation}
+                  \item For $t\in[0,t^*)$,
+                        \begin{equation}
+                            \RS(\vtheta(t))\leq\exp\left(-\frac{m\kappa^2}{n}\left(\frac{1}{\kappa'}\lambda_a+\kappa'\lambda_{\vw}\right)t\right)\RS(\vtheta^0)\leq\exp\left(-\frac{2m\kappa^2\lambda}{n}\right)\RS(\vtheta^0).
+                        \end{equation}
+                        Suppose that $t^*<+\infty$ then one can take the limit $t\to t^*$ in~\eqref{thm-proof:step1} and~\eqref{thm-proof:step2}. This will lead to a contradiction with the definition of $t^*$. Therefore $t^*=+\infty$.
+              \end{enumerate}
+        \item Let $\rX_1, \ldots, \rX_{m(d+1)}$ be the squares of the entries of $\vtheta^0$, which are i.i.d.\ from $\chi^2(1)$ is sub-exponential and $\Exp\rX_k=1$. Then by Theorem~\ref{thm:sub_exp}
+              \begin{equation}
+                  \Prob\left(\Abs{\frac{1}{m(d+1)}\sum_{k=1}^{m(d+1)}\rX_k-1}\geq s\right)\leq 2\exp\left(-C_0 m(d+1) \min\left(\frac{s^2}{C^2_{\psi,1}},\frac{s}{C_{\psi,1}}\right)\right).
+              \end{equation}
+              Note that $\frac{s}{C_{\psi,1}}\leq 1$. Setting $s=\frac{1}{2}$, we have
+              \begin{equation}
+                  \begin{aligned}
+                      \Prob\left(\frac{1}{m(d+1)}\sum_{k=1}^{m(d+1)}\rX_k<\frac{1}{2}\right)
+                       & \leq 2\exp\left(-C_0 m(d+1) \min\left(\frac{1}{4C^2_{\psi,1}},\frac{1}{2C_{\psi,1}}\right)\right) \\
+                       & =2\exp\left(-\frac{C_0m(d+1)}{4C^2_{\psi,1}}\right).
+                  \end{aligned}
+              \end{equation}
+              So with probability at least $1-\delta-2\exp\left(-\frac{C_0m(d+1)}{4C^2_{\psi,1}}\right)$ over the choice of $\vtheta^0$,
+              \begin{equation}
+                  \begin{aligned}
+                      \sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta(t)-\vtheta^0}_2}{\norm{\vtheta^0}_2}
+                       & \leq \sqrt{\frac{2}{m(d+1)}}\sup\limits_{t\in[0,+\infty)}\norm{\vtheta(t)-\vtheta^0}_2                                          \\
+                       & \leq  \sqrt{\frac{2}{m(d+1)}} \frac{4\sqrt{d+1}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\sqrt{m}\kappa\lambda} \\
+                       & \leq \frac{1}{m\kappa}\frac{4\sqrt{2}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\lambda}                         \\
+                       & \lesssim \frac{1}{m\kappa}\log m.
+                  \end{aligned}
+              \end{equation}
+    \end{enumerate}
+\end{proof}
+\begin{rmk}
+    The proof indicates more quantitative conditions on $m$ and $\kappa$ for Theorem~\ref{thm:main} to hold:
+    \begin{equation}
+        m\geq \frac{16n^2d^2C_{\psi,d}^2}{\lambda^2C_0}\log\frac{16n^2}{\delta},
+    \end{equation}
+    and
+    \begin{equation}
+        \begin{aligned}
+            m\kappa\geq\max\Bigg\{\frac{2\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{\lambda}, & \;\frac{128\sqrt{2}d^3n^2\left(\log\frac{8m(d+1)}{\delta}\sqrt{\RS(\vtheta^0)}\right)}{\lambda^2},                \\
+                                                                                    & \frac{5120\delta^{-1}d^3n^3\left(\log\frac{8m(d+1)}{\delta}\right)^{3/2}\sqrt{\RS(\vtheta^0)}}{\lambda^2}\Bigg\}.
+        \end{aligned}
+    \end{equation}
+\end{rmk}
+
+\begin{prop}[$\vw$-lazy training]\label{prop..WLazyRegime}
+    Given $\delta\in(0,1)$ and the sample set $S = {\{(\vx_i, y_i)\}}_{i=1}^n\subset\Omega$ with $\vx_i$'s drawn i.i.d.\ from some unknown distribution $\fD$. Suppose that Assumption~\ref{assump..lambda} and Assumption~\ref{assump..gammagamma'} hold. ASI trick is used if $\gamma<\frac{1}{2}$. Then for sufficiently large $m$, we have with probability at least $1-\delta$ over the choice of $\vtheta^0$, for $\gamma'>\gamma-1$ and $\gamma'>0$,
+    \begin{enumerate}[(a)]
+        \item \begin{equation}
+                  \begin{aligned}
+                      \sup\limits_{t\in[0,+\infty)}\norm{\vtheta_{\vw}(t)-\vtheta_{\vw}^0}_2
+                        \lesssim \sup\limits_{t\in[0,+\infty)}\norm{\vtheta(t)-\vtheta^0}_2
+                       \lesssim\frac{1}{\sqrt{m}\kappa}\log m.
+                  \end{aligned}
+              \end{equation}
+        \item $\RS(\vtheta(t))\leq\exp\left(-\frac{m\kappa^2\lambda_a t}{\kappa'n}\right)\RS(\vtheta^0)$. \\
+              Moreover we have with probability at least $1-\delta-2\exp\left(-\frac{C_0m(d+1)}{4C_{\psi,1}^2}\right)$.
+        \item \begin{equation}
+                  \begin{aligned}
+                      \sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta(t)-\vtheta^0}_2}{\norm{\vtheta^0}_2}
+                       & \lesssim\frac{1}{m\kappa}\log m, \quad (\text{not }\lesssim 1), \\
+                      \sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta_{\vw}(t)-\vtheta_{\vw}^0}_2}{\norm{\vtheta_{\vw}}_2}
+                       & \lesssim\frac{\kappa'}{m\kappa}\log m, \quad (\lesssim 1).
+                  \end{aligned}
+              \end{equation}
+    \end{enumerate}
+\end{prop}
+\begin{proof}
+    Let $t\in[0, t^*_a)$, $p_a=\frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\lambda_a/\kappa'}$ and $\xi=\sqrt{2\log\frac{8m(d+1)}{\delta}}$.
+    \begin{enumerate}[(a)]
+        \item From Proposition~\ref{prop:a_w} we have with probability at least $1-\delta/2$ over the choice of $\vtheta^0$
+              \begin{equation}
+                  \begin{aligned}
+                      \sup\limits_{t\in[0,t^*_a)}\norm{\vtheta_{\vw}(t)-\vtheta_{\vw}^0}_2
+                      &\leq \sup\limits_{t\in[0,t^*_a)}\norm{\vtheta(t)-\vtheta^0}_2\\
+                       & \leq \left[\left(\frac{m}{\kappa'^2}+md\right)\left(2\sqrt{2\log\frac{8m(d+1)}{\delta}}p_a\right)^2\right]^{\frac{1}{2}}                                                         \\
+                       & =\sqrt{m(d+1)}2\frac{1}{\kappa'}\sqrt{2\log\frac{8m(d+1)}{\delta}}\frac{\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\lambda_a/\kappa'}                                               \\
+                       & \leq\max\left\{\kappa',\frac{1}{\kappa'}\right\}\frac{4\sqrt{d+1}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\sqrt{m}\kappa\left(\lambda_a/\kappa'+\kappa'\lambda_{\vw}\right)} \\
+                       & \leq\frac{8\sqrt{d+1}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\sqrt{m}\kappa\lambda_a}.
+                  \end{aligned}
+              \end{equation}
+            %   \begin{equation}
+            %       \begin{aligned}
+            %           \sup\limits_{t\in[0,t^*_a)}\norm{\vtheta_{\vw}(t)-\vtheta_{\vw}^0}_2
+            %           & = \left[md\left(2\sqrt{2\log\frac{8m(d+1)}{\delta}}p_a\right)^2\right]^{1/2}                                    \\
+            %           & = \sqrt{md}2\sqrt{2\log\frac{8m(d+1)}{\delta}}\frac{2\sqrt{2}dn\sqrt{\RS(\vtheta^0)}}{m\kappa\lambda_a/\kappa'} \\
+            %           & = \frac{\kappa'}{\sqrt{m}\kappa}\frac{8\sqrt{d}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\lambda_a}          \\
+            %           & \lesssim \frac{\kappa'}{\sqrt{m}\kappa}\log m.
+            %       \end{aligned}
+            %   \end{equation}
+
+        \item We divide this proof into the following two steps.
+              \begin{enumerate}[(i)]
+                  \item Let
+                        \begin{equation}
+                            G^{[a]}_{ij}(\vw) := \sigma(\vw^\T\vx_i)\sigma(\vw^\T\vx_j),
+                        \end{equation}
+                        then
+                        \begin{equation}
+                            \abs{G_{ij}^{[a]}(\vtheta(t)) - G_{ij}^{[a]}(\vtheta(0))} \leq \frac{\kappa^2}{m\kappa'}\sum_{k=1}^m \abs{g^{[a]}_{ij}(\vw_k(t)) - g^{[a]}_{ij}(\vw_k(0))}.
+                        \end{equation}
+                        By mean value theorem, for somce $c\in(0,1)$,
+                        \begin{equation}
+                            \abs{g^{[a]}_{ij}(\vw_k(t)) - g^{[a]}_{ij}(\vw_k(0))} \leq \norm{\nabla g_{ij}\left(c\vw_k(t) + (1-c)\vw_k(0)\right)}_{\infty}\norm{\vw_k(t) - \vw_k(0)}_1,
+                        \end{equation}
+                        where
+                        \begin{equation}
+                            \nabla g_{ij}^{[a]}(\vw)=\sigma'(\vw\cdot\xi_i)\sigma(\vw^\T\vx_j)\vx_i+\sigma(\vw^\T\vx_i)\sigma'(\vw^\T\vx_j)\vx_j,
+                        \end{equation}
+                        and
+                        \begin{equation}
+                            \norm{\nabla g_{ij}^{[a]}(\vw)}_{\infty}\leq 2\norm{\vw}_1.
+                        \end{equation}
+                        From Proposition~\ref{prop:a_w} we have with probability at least $1-\delta/2$
+                        \begin{align}
+                            \norm{\vw_k(t)-\vw_k(0)}_{\infty} & \leq p_a\alpha(t)\kappa'\leq 2\xi p_a, \\
+                            \norm{\vw_k(t)-\vw_k(0)}_1        & \leq 2d\xi p_a,
+                        \end{align}
+                        so
+                        \begin{equation}
+                            \begin{aligned}
+                                \norm{c\vw_k(t) + (1-c)\vw_k(0)}_1
+                                 & \leq d\left(\norm{\vw_k(0)}_{\infty} + \norm{\vw_k(t) - \vw_k(0)}_{\infty}\right) \\
+                                 & \leq d\left(\xi+2\xi p_a\right)                         \\
+                                 & \leq 2d\xi.
+                            \end{aligned}
+                        \end{equation}
+                        Then
+                        \begin{equation}
+                            \abs{G_{ij}^{[a]}(\vtheta(t)) - G_{ij}^{[a]}(\vtheta(0))} \leq 8d^2\frac{\kappa^2}{\kappa'}\xi^2p_a,
+                        \end{equation}
+                        and
+                        \begin{equation}
+                            \begin{aligned}
+                                \norm{\mG^{[a]}(\vtheta(t)) - \mG^{[a]}(\vtheta(0))}_\mathrm{F}
+                                 & \leq 16d^2n\left(\log\frac{8m(d+1)}{\delta}\right)\frac{\kappa^2}{\kappa'}p_a                          \\
+                                 & \leq\frac{32\sqrt{2}d^3n^2\left(\log\frac{8m(d+1)}{\delta}\right)\sqrt{\RS(\vtheta^0)}\kappa}{m\lambda_a}.
+                            \end{aligned}
+                        \end{equation}
+                        If
+                        \begin{equation}
+                            \frac{m\kappa}{\kappa'}\geq\frac{256\sqrt{2}d^3n^2\left(\log\frac{8m(d+1)}{\delta})\right)\sqrt{\RS(\vtheta^0)}}{\lambda_a^2},
+                        \end{equation}
+                        then we have
+                        \begin{equation}\label{thm-proof:w-step1}
+                            \norm{\mG^{[a]}(\vtheta(t)) - \mG^{[a]}(\vtheta(0))}_\mathrm{F}\leq\frac{1}{8}\frac{\kappa^2}{\kappa'}\lambda_a.
+                        \end{equation}
+                  \item For $t\in[0,t^*_a)$ by Lemman~\ref{lem:exp_RS},
+                        \begin{equation}
+                            \RS(\vtheta(t))\leq\exp\left(-\frac{m\kappa^2\lambda_at}{n\kappa'}\right)\RS(\vtheta^0).
+                        \end{equation}
+                        Suppose that $t^*_a<+\infty$ then one can take the limit $t\to t^*_a$ in~\eqref{thm-proof:w-step1}. This will lead to a contradiction with the definition of $t^*$. Therefore $t^*_a=+\infty$.
+              \end{enumerate}
+        \item Let $\rX_1, \ldots, \rX_{m(d+1)}$ be the squares of the entries of $\vtheta^0$, which are i.i.d. $\sim\chi^2(1)$ is sub-exponential and $\Exp\rX_k=1$. Then by Theorem~\ref{thm:sub_exp}
+              \begin{equation}
+                  \Prob\left(\Abs{\frac{1}{m(d+1)}\sum_{k=1}^{m(d+1)}\rX_k-1}\geq s\right)\leq 2\exp\left(-C_0 m(d+1) \min\left(\frac{s^2}{C^2_{\psi,1}},\frac{s}{C_{\psi,1}}\right)\right).
+              \end{equation}
+              Set $s=\frac{1}{2}$ and note that $\frac{s}{C_{\psi,1}}\leq 1$,
+              \begin{equation}
+                  \begin{aligned}
+                      \Prob\left(\frac{1}{m(d+1)}\sum_{k=1}^{m(d+1)}\rX_k<\frac{1}{2}\right)
+                       & \leq 2\exp\left(-C_0 m(d+1) \min\left(\frac{1}{4C^2_{\psi,1}},\frac{1}{2C_{\psi,1}}\right)\right) \\
+                       & =2\exp\left(-\frac{C_0m(d+1)}{4C^2_{\psi,1}}\right),
+                  \end{aligned}
+              \end{equation}
+              with probability at least $1-2\exp\left(-\frac{C_0m(d+1)}{4\norm{\rX_1}^2_{\psi_1}}\right)$ we have
+              \begin{equation}
+                  \norm{\vtheta^0}^2_2=\sum_{k=1}^{m(d+1)}\rX_k\geq\frac{d+1}{2}m.
+              \end{equation}
+              So with probability at least $1-\delta-2\exp\left(-\frac{C_0m(d+1)}{4C^2_{\psi,1}}\right)$,
+              \begin{equation}
+                  \begin{aligned}
+                      \sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta(t)-\vtheta^0}_2}{\norm{\vtheta^0}_2}
+                       & \leq \sqrt{\frac{2}{m(d+1)}}\sup\limits_{t\in[0,+\infty)}\norm{\vtheta(t)-\vtheta^0}_2                                          \\
+                       & \leq  \sqrt{\frac{2}{m(d+1)}} \frac{8\sqrt{d+1}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\sqrt{m}\kappa\lambda} \\
+                       & \leq \frac{1}{m\kappa}\frac{8\sqrt{2}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\lambda_a}                             \\
+                       & \lesssim \frac{1}{m\kappa}\log m.
+                  \end{aligned}
+              \end{equation}
+              Let $\rX_1, \ldots, \rX_{md}$ be the entries of $\vtheta_{\vw}^0$, which are i.i.d. $\sim\chi^2(1)$ is sub-exponential and $\Exp\rX_k=1$. Then by Theorem~\ref{thm:sub_exp}
+              \begin{equation}
+                  \Prob\left(\Abs{\frac{1}{md}\sum_{k=1}^{md}\rX_k-1}\geq s\right)\leq 2\exp\left(-C_0 md \min\left(\frac{s^2}{C^2_{\psi,1}},\frac{s}{C_{\psi,1}}\right)\right).
+              \end{equation}
+              Set $s=\frac{1}{2}$ and note that $\frac{s}{C_{\psi,1}}\leq 1$,
+              \begin{equation}
+                  \begin{aligned}
+                      \Prob\left(\frac{1}{md}\sum_{k=1}^{md}\rX_k<\frac{1}{2}\right)
+                       & \leq 2\exp\left(-C_0 md \min\left(\frac{1}{4C^2_{\psi,1}},\frac{1}{2C_{\psi,1}}\right)\right) \\
+                       & =2\exp\left(-\frac{C_0md}{4C^2_{\psi,1}}\right),
+                  \end{aligned}
+              \end{equation}
+              with probability at least $1-2\exp\left(-\frac{C_0md}{4\norm{\rX_1}^2_{\psi_1}}\right)$ we have
+              \begin{equation}
+                  \norm{\vtheta_{\vw}^0}^2_2=\sum_{k=1}^{md}\rX_k\geq\frac{d}{2}m.
+              \end{equation}
+              So with probability at least $1-\delta-2\exp\left(-\frac{C_0m}{4C^2_{\psi,1}}\right)$,
+              \begin{equation}
+                  \begin{aligned}
+                      \sup\limits_{t\in[0,+\infty)}\frac{\norm{\vtheta_{\vw}(t)-\vtheta_{\vw}^0}_2}{\norm{\vtheta^0}_2}
+                       & \leq \sqrt{\frac{2}{dm}}\sup\limits_{t\in[0,+\infty)}\norm{\vtheta_{\vw}(t)-\vtheta_{\vw}^0}_2                                                                   \\
+                       & \leq  \sqrt{\frac{2}{dm}}\frac{\kappa'}{\sqrt{m}\kappa}\frac{8\sqrt{d}dn\sqrt{\log\frac{8m(d+1)}{\delta}}\sqrt{\RS(\vtheta^0)}}{\lambda} \\
+                       & \lesssim \frac{\kappa'}{m\kappa}\log m.
+                  \end{aligned}
+              \end{equation}
+    \end{enumerate}
+\end{proof}
+
+\section{Proof of Theorem \ref{thm..NonLazyRegime}}
+\begin{proof}[Proof of Theorem \ref{thm..NonLazyRegime}]
+    Without loss of generality, we suppose that $f(\vx_1)\geq\frac{1}{2}$. Then
+    \begin{equation*}
+        \frac{1}{2}\geq\RS(\vtheta^0)\geq\frac{1}{2n}\left(\frac{1}{2}-0\right)^2=\frac{1}{8n}.
+    \end{equation*}
+    Define
+    \begin{equation}
+        t_1=\inf\left\{t\mid \sum_{k=1}^m\left(\kappa'\abs{a_k(T)}^2+\frac{1}{\kappa'}\norm{\vw_k(t)}^2_2\right)\geq\frac{1}{2\kappa\sqrt{d}}\right\}.
+    \end{equation}
+    Then we claim that $t_1\leq T$. Suppose that $T<t_1$, then
+    \begin{equation*}
+        \begin{aligned}
+            \frac{1}{2}
+             & > \kappa \sqrt{d}\sum_{k=1}^m\left(\kappa'\abs{a_k(T)}^2+\frac{1}{\kappa'}\norm{\vw_k(T)}_2^2\right) \\
+             & \geq 2\kappa\sqrt{d}\sum_{k=1}^m \abs{a_k(T)}\norm{\vw_k(T)}_2                                  \\
+             & \geq 2\abs{\kappa f(\vx_1;\vtheta(T))}                                                           \\
+             & \geq 2\left(\abs{f(\vx_1)}-\abs{\kappa f(\vx_1;\vtheta(t))-f(\vx_1)}\right)                      \\
+             & \geq 2\left(\frac{1}{2}-\sqrt{2n\RS(\vtheta(T))}\right)                                   \\
+             & \geq2\left(\frac{1}{2}-\sqrt{2n\eps\RS(\vtheta^0)}\right)                                 \\
+             & \geq 2\left(\frac{1}{2}-\sqrt{n\eps}\right)                                               \\
+             & \geq 2\left(\frac{1}{2}-\frac{1}{4}\right)                                                \\
+             & = \frac{1}{2}.
+        \end{aligned}
+    \end{equation*}
+    This contradiction leads to the claim that $t_1\leq T$. Let
+    \begin{equation}
+        Q(t)=\sum_{k=1}^m\left(\kappa'\abs{a_k(t)}^2+\frac{1}{\kappa'}\norm{\vw(t)}_2^2\right).
+    \end{equation}
+    Recalling the training dynamics
+    \begin{equation*}
+        \begin{aligned}
+            \dot{a}_k   & = -\frac{\kappa}{\kappa'n}\sum_{i=1}^n e_i\sigma(\vw_k^\T\vx_i), \\
+            \dot{\vw}_k & = -\frac{\kappa\kappa'}{n}\sum_{i=1}^n e_i a_k\sigma'(\vw_k^\T\vx_i)\vx_i,
+        \end{aligned}
+    \end{equation*}
+    we have
+    \begin{equation*}
+        \begin{aligned}
+            \frac{\D Q}{\D t}
+             & = 2\sum_{k=1}^m\left(\kappa'\dot{a}_k a_k + \frac{1}{\kappa'}\dot{\vw}_k\cdot\vw_k\right)                                                                    \\
+             & = -\frac{2\kappa}{n}\sum_{i=1}^n e_i \sum_{k=1}^m a_k \sigma(\vw_k^\T\vx_i) - \frac{2\kappa}{n}\sum_{i=1}^n e_k\sum_{k=1}^m a_k\sigma'(\vw_k^\T\vx_i)\vx_i\cdot\vw_k \\
+             & = -\frac{4\kappa}{n}\sum_{i=1}^n e_i\sum_{k=1}^m a_k\sigma(\vw_k^\T\vx_i)                                                                                        \\
+             & \leq 4\kappa\left(\frac{1}{n}\sum_{i=1}^n\abs{e_i}\right)\sqrt{d}\sum_{k=1}^m\abs{a_k}\norm{\vw_k}_2                                                               \\
+             & \leq 2\kappa\left(\frac{1}{n}\sum_{i=1}^n e_i^2\right)^{1/2}\sqrt{d}\sum_{k=1}^m\left(\kappa'\abs{a_k}^2+\frac{1}{\kappa'}\norm{\vw_k}_2^2\right)                  \\
+             & \leq 2\kappa\sqrt{2\RS(\vtheta)}\sqrt{d}Q                                                                                                                          \\
+             & \leq 2\kappa\sqrt{d}Q.
+        \end{aligned}
+    \end{equation*}
+    Thus
+    \begin{align*}
+        \frac{\D Q}{Q} &\leq 2\kappa\sqrt{d} \D t,\\
+        \log Q(t)\Big|^{t_1}_0 &\leq 2\kappa\sqrt{d}t_1,\\
+        \log(Q(t_1)) - \log(Q(0)) &\leq 2\kappa\sqrt{d}t_1.
+    \end{align*}
+    By the definition of $t_1$, $Q(t_1)=\frac{1}{2\kappa\sqrt{d}}$. By Lemma~\ref{lem..InitialParameter}, with probability at least $1-\delta$ over the choice of $\vtheta^0$, we have
+    \begin{equation*}
+        \max\limits_{k\in[m]}\left\{\abs{a_k^0},\;\norm{\vw_k^0}_{\infty}\right \}\leq\sqrt{2\log\frac{2m(d+1)}{\delta}}
+    \end{equation*}
+    and
+    \begin{equation*}
+        Q(0)\leq m(\kappa'+\frac{d}{\kappa'})2\log\frac{2m(d+1)}{\delta}.
+    \end{equation*}
+    Therefore
+    \begin{equation*}
+        \begin{aligned}
+            2\kappa\sqrt{d}t_1
+             & \geq \log\frac{1}{2\kappa\sqrt{d}} - \log\left[m(\kappa'+\frac{d}{\kappa'})2\log\frac{2m(d+1)}{\delta}\right] \\
+             & = -\log\left[mm^{-\gamma}(m^{-\gamma'}+dm^{\gamma'})4\sqrt{d}\log\frac{2m(d+1)}{\delta}\right]                \\
+             & \geq - \log\left[m^{1-\gamma+\abs{\gamma'}}4(d+1)\sqrt{d}\log\frac{2m(d+1)}{\delta}\right].
+        \end{aligned}
+    \end{equation*}
+    If $\gamma-1-\abs{\gamma'}>0$, we have
+    \begin{equation*}
+        T\geq t_1\geq \frac{1}{2\kappa\sqrt{d}}\log\left(\frac{m^{\gamma-1-\abs{\gamma'}}}{4(d+1)\sqrt{d}\log\frac{2m(d+1)}{\delta}}\right) = \Omega\left(\frac{1}{\kappa}\log m\right).
+    \end{equation*}
+\end{proof}
+\bibliographystyle{plain}
+\bibliography{dl}
+
+\end{document}

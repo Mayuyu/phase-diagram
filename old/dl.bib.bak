@@ -1,0 +1,523 @@
+% Encoding: UTF-8
+
+@incollection{aubin_committee_2018,
+	title = {The committee machine: {Computational} to statistical gaps in learning a two-layers neural network},   
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 31}, 
+	author = {Aubin, Benjamin and Maillard, Antoine and barbier, jean and Krzakala, Florent and Macris, Nicolas and Zdeborová, Lenka}, 
+	year = {2018},
+	pages = {3223--3234}, 
+}
+@inproceedings{allender1996circuit,
+  title={Circuit complexity before the dawn of the new millennium},
+  author={Allender, Eric},
+  booktitle={International Conference on Foundations of Software Technology and Theoretical Computer Science},
+  pages={1--18},
+  year={1996},
+  organization={Springer}
+}
+@book{minsky2017perceptrons,
+  title={Perceptrons: An introduction to computational geometry},
+  author={Minsky, Marvin and Papert, Seymour A},
+  year={2017},
+  publisher={MIT press}
+}
+@article{breiman1995reflections,
+  title={Reflections after refereeing papers for NIPS},
+  author={Breiman, Leo},
+  journal={The Mathematics of Generalization},
+  pages={11--15},
+  volume = {XX},
+  year={1995},
+  publisher={Addison Wesley Reading, MA}
+}
+
+@article{zdeborova2020understanding,
+  title={Understanding deep learning is also a job for physicists},
+  author={Zdeborov{\'a}, Lenka},
+  journal={Nature Physics},
+  volume = {16},
+  issn = {1745-2481}, 
+  doi = {10.1038/s41567-020-0929-2}, 
+  pages={1--3},
+  year={2020},
+  publisher={Nature Publishing Group}
+}
+@inproceedings{basri2019convergence,
+  title={The convergence rate of neural networks for learned functions of different frequencies},
+  author={Ronen, Basri and Jacobs, David and Kasten, Yoni and Kritchman, Shira},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={4763--4772},
+  year={2019}
+}
+@inproceedings{valle2018deep,
+  title={Deep learning generalizes because the parameter-function map is biased towards simple functions},
+  author={Valle-Perez, Guillermo and Camargo, Chico Q and Louis, Ard A},
+  booktitle={The International Conference on Learning Representations},
+  year={2019}
+}
+
+@incollection{kalimeris_sgd_2019,
+	title = {{SGD} on {Neural} {Networks} {Learns} {Functions} of {Increasing} {Complexity}},  
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 32},
+	author = {Kalimeris, Dimitris and Kaplun, Gal and Nakkiran, Preetum and Edelman, Benjamin and Yang, Tristan and Barak, Boaz and Zhang, Haofeng}, 
+	year = {2019},
+	pages = {3496--3506}, 
+}
+
+@inproceedings{arpit2017closer,
+  title={A closer look at memorization in deep networks},
+  author={Arpit, Devansh and Jastrzbski, Stanislaw and Ballas, Nicolas and Krueger, David and Bengio, Emmanuel and Kanwal, Maxinder S and Maharaj, Tegan and Fischer, Asja and Courville, Aaron and Bengio, Yoshua and others},
+  booktitle={Proceedings of the 34th International Conference on Machine Learning-Volume 70},
+  pages={233--242},
+  year={2017}, 
+}
+@article{aurisano_convolutional_2016,
+	title = {A convolutional neural network neutrino event classifier},
+	volume = {11},
+	issn = {1748-0221}, 
+	doi = {10.1088/1748-0221/11/09/P09001}, 
+	number = {09}, 
+	journal = {Journal of Instrumentation},
+	author = {Aurisano, A. and Radovic, A. and Rocco, D. and Himmel, A. and Messier, M. D. and Niner, E. and Pawloski, G. and Psihas, F. and Sousa, A. and Vahle, P.}, 
+	year = {2016}, 
+	pages = {P09001--P09001}, 
+}
+
+@article{bahri_statistical_2020,
+	title = {Statistical {Mechanics} of {Deep} {Learning}},
+	volume = {11}, 
+	doi = {10.1146/annurev-conmatphys-031119-050745}, 
+	number = {1}, 
+	journal = {Annual Review of Condensed Matter Physics},
+	author = {Bahri, Yasaman and Kadmon, Jonathan and Pennington, Jeffrey and Schoenholz, Sam S. and Sohl-Dickstein, Jascha and Ganguli, Surya},
+	year = {2020}, 
+	pages = {501--528}, 
+}
+
+@article{biland_frequency-aware_2019,
+	title = {Frequency-{Aware} {Reconstruction} of {Fluid} {Simulations} with {Generative} {Networks}}, 
+	journal = {arXiv:1912.08776 [physics, stat]},
+	author = {Biland, Simon and Azevedo, Vinicius C. and Kim, Byungsoo and Solenthaler, Barbara}, 
+	year = {2019},  
+}
+
+@article{cai_approximating_2018,
+	title = {Approximating quantum many-body wave functions using artificial neural networks},
+	volume = {97},
+	issn = {2469-9950, 2469-9969},
+	url = {https://link.aps.org/doi/10.1103/PhysRevB.97.035116},
+	doi = {10.1103/PhysRevB.97.035116},
+	language = {en},
+	number = {3},
+	urldate = {2020-06-22},
+	journal = {Physical Review B},
+	author = {Cai, Zi and Liu, Jinguo},
+	month = jan,
+	year = {2018},
+	pages = {035116},
+}
+@article{ma2020quenching,
+  title={The Quenching-Activation Behavior of the Gradient Descent Dynamics for Two-layer Neural Network Models},
+  author={Ma, Chao and Wu, Lei and others},
+  journal={arXiv preprint arXiv:2006.14450},
+  year={2020}
+}
+
+@article{maennel2018gradient,
+  title={Gradient descent quantizes relu network features},
+  author={Maennel, Hartmut and Bousquet, Olivier and Gelly, Sylvain},
+  journal={arXiv preprint arXiv:1803.08367},
+  year={2018}
+}
+
+@article{zhang2019explicitizing,
+  title={Explicitizing an implicit bias of the frequency principle in two-layer neural networks},
+  author={Zhang, Yaoyu and Xu, Zhi-Qin John and Luo, Tao and Ma, Zheng},
+  journal={arXiv preprint arXiv:1905.10264},
+  year={2019}
+}
+@article{chizat2018note,
+  title={A note on lazy training in supervised differentiable programming},
+  author={Chizat, Lenaic and Bach, Francis},
+  journal={arXiv preprint arXiv:1812.07956},
+  volume={1},
+  year={2018}
+}
+@article{e2020comparative,
+  title={A comparative analysis of optimization and generalization properties of two-layer neural network and random feature models under gradient descent dynamics.},
+  author={E, Weinan and Ma, Chao and Wu, Lei },
+  journal={Sci. China Math.}, 
+  volume = {63},
+  year={2020} 
+}
+
+
+@inproceedings{arora2019exact,
+  title={On exact computation with an infinitely wide neural net},
+  author={Arora, Sanjeev and Du, Simon S and Hu, Wei and Li, Zhiyuan and Salakhutdinov, Russ R and Wang, Ruosong},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={8141--8150},
+  year={2019}
+}
+@article{nye2018efficient,
+  title={Are efficient deep representations learnable?},
+  author={Nye, Maxwell and Saxe, Andrew},
+  journal={arXiv preprint arXiv:1807.06399},
+  year={2018}
+}
+
+@article{cybenko1989approximation,
+  title={Approximation by superpositions of a sigmoidal function},
+  author={Cybenko, George},
+  journal={Mathematics of control, signals and systems},
+  volume={2},
+  number={4},
+  pages={303--314},
+  year={1989},
+  publisher={Springer}
+}
+@article{cai_phase_2019,
+	title = {A {Phase} {Shift} {Deep} {Neural} {Network} for {High} {Frequency} {Approximation} and {Wave} {Problems}}, 
+	journal = {arXiv:1909.11759 [cs, math]},
+	author = {Cai, Wei and Li, Xiaoguang and Liu, Lizuo}, 
+	year = {2019}, 
+}
+
+@article{cao_towards_2020,
+	title = {Towards {Understanding} the {Spectral} {Bias} of {Deep} {Learning}}, 
+	journal = {arXiv:1912.01198 [cs, stat]},
+	author = {Cao, Yuan and Fang, Zhiying and Wu, Yue and Zhou, Ding-Xuan and Gu, Quanquan}, 
+	year = {2020},    
+}
+
+@article{carleo_machine_2019,
+	title = {Machine learning and the physical sciences},
+	volume = {91}, 
+	doi = {10.1103/RevModPhys.91.045002}, 
+	number = {4}, 
+	journal = {Reviews of Modern Physics},
+	author = {Carleo, Giuseppe and Cirac, Ignacio and Cranmer, Kyle and Daudet, Laurent and Schuld, Maria and Tishby, Naftali and Vogt-Maranto, Leslie and Zdeborová, Lenka}, 
+	year = {2019}, 
+	pages = {045002}, 
+}
+
+@incollection{chizat_global_2018,
+	title = {On the {Global} {Convergence} of {Gradient} {Descent} for {Over}-parameterized {Models} using {Optimal} {Transport}}, 
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 31}, 
+	author = {Chizat, Lénaïc and Bach, Francis}, 
+	year = {2018},
+	pages = {3036--3046}, 
+}
+
+@inproceedings{choromanska_loss_2015,
+  title={The loss surfaces of multilayer networks},
+  author={Choromanska, Anna and Henaff, Mikael and Mathieu, Michael and Arous, G{\'e}rard Ben and LeCun, Yann},
+  booktitle={Artificial Intelligence and Statistics},
+  pages={192--204},
+  year={2015}
+}
+@article{e_priori_2019,
+	title = {A {Priori} {Estimates} of the {Population} {Risk} for {Two}-layer {Neural} {Networks}},
+	volume = {17}, 
+	doi = {10.4310/CMS.2019.v17.n5.a11}, 
+	number = {5}, 
+	journal = {Communications in Mathematical Sciences},
+	author = {E, Weinan and Ma, Chao and Wu, Lei},
+	year = {2019},  
+	pages = {1407--1425}, 
+}
+
+@book{engel_statistical_2001,
+	title = {Statistical {Mechanics} of {Learning}}, 
+	author = {Engel, A. and Broeck, C. Van den}, 
+	year = {2001},
+	note = {Google-Books-ID: qVo4IT9ByfQC}, 
+}
+
+@inproceedings{eykholt_robust_2018,
+	title = {Robust {Physical}-{World} {Attacks} on {Deep} {Learning} {Visual} {Classification}},
+	doi = {10.1109/CVPR.2018.00175}, 
+	booktitle = {2018 {IEEE}/{CVF} {Conference} on {Computer} {Vision} and {Pattern} {Recognition}},
+	author = {Eykholt, Kevin and Evtimov, Ivan and Fernandes, Earlence and Li, Bo and Rahmati, Amir and Xiao, Chaowei and Prakash, Atul and Kohno, Tadayoshi and Song, Dawn}, 
+	year = {2018}, 
+	pages = {1625--1634}
+} 
+
+@article{guest_deep_2018,
+	title = {Deep {Learning} and {Its} {Application} to {LHC} {Physics}},
+	volume = {68}, 
+	doi = {10.1146/annurev-nucl-101917-021019}, 
+	number = {1}, 
+	journal = {Annual Review of Nuclear and Particle Science},
+	author = {Guest, Dan and Cranmer, Kyle and Whiteson, Daniel},
+	year = {2018},
+	pages = {161--181}, 
+}
+
+@incollection{jacot_neural_2018,
+	title = {Neural {Tangent} {Kernel}: {Convergence} and {Generalization} in {Neural} {Networks}}, 
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 31}, 
+	author = {Jacot, Arthur and Gabriel, Franck and Hongler, Clement}, 
+	year = {2018},
+	pages = {8571--8580}, 
+}
+
+@article{jagtap_adaptive_2020,
+	title = {Adaptive activation functions accelerate convergence in deep and physics-informed neural networks},
+	volume = {404}, 
+	doi = {10.1016/j.jcp.2019.109136}, 
+	journal = {Journal of Computational Physics},
+	author = {Jagtap, Ameya D. and Kawaguchi, Kenji and Karniadakis, George Em}, 
+	year = {2020}, 
+	pages = {109136}, 
+}
+
+@inproceedings{lampinen_analytic_2019,
+	title = {An analytic theory of generalization dynamics and transfer learning in deep linear networks}, 
+	booktitle = {The International Conference on Learning Representations},
+	author = {Lampinen, Andrew K. and Ganguli, Surya}, 
+	year = {2019}, 
+}
+
+@article{lecun_deep_2015,
+	title = {Deep learning},
+	volume = {521},  
+	doi = {10.1038/nature14539}, 
+	number = {7553},
+	urldate = {2020-05-09},
+	journal = {Nature},
+	author = {LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey}, 
+	year = {2015}, 
+	pages = {436--444}, 
+}
+@inproceedings{saxe_exact_2013,
+	title = {Exact solutions to the nonlinear dynamics of learning in deep linear neural networks}, 
+	author = {Saxe, Andrew M. and McClelland, James L. and Ganguli, Surya}, 
+	year = {2014}, 
+	booktitle = {The International Conference on Learning Representations}
+}
+@incollection{lee_wide_2019,
+	title = {Wide {Neural} {Networks} of {Any} {Depth} {Evolve} as {Linear} {Models} {Under} {Gradient} {Descent}}, 
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 32}, 
+	author = {Lee, Jaehoon and Xiao, Lechao and Schoenholz, Samuel and Bahri, Yasaman and Novak, Roman and Sohl-Dickstein, Jascha and Pennington, Jeffrey}, 
+	year = {2019},
+	pages = {8572--8583}, 
+}
+
+@article{levine_quantum_2019,
+	title = {Quantum {Entanglement} in {Deep} {Learning} {Architectures}},
+	volume = {122}, 
+	doi = {10.1103/PhysRevLett.122.065301}, 
+	number = {6}, 
+	journal = {Physical Review Letters},
+	author = {Levine, Yoav and Sharir, Or and Cohen, Nadav and Shashua, Amnon}, 
+	year = {2019}, 
+	pages = {065301}, 
+}
+
+@article{luo_theory_2019,
+	title = {Theory of the {Frequency} {Principle} for {General} {Deep} {Neural} {Networks}}, 
+	journal = {arXiv:1906.09235 [cs, math, stat]},
+	author = {Luo, Tao and Ma, Zheng and Xu, Zhi-Qin John and Zhang, Yaoyu}, 
+	year = {2019},  
+}
+
+@article{mehta_high-bias_2019, 
+	title = {A high-bias, low-variance introduction to {Machine} {Learning} for physicists},
+	volume = {810}, 
+	doi = {10.1016/j.physrep.2019.03.001}, 
+	journal = {Physics Reports},
+	author = {Mehta, Pankaj and Bukov, Marin and Wang, Ching-Hao and Day, Alexandre G. R. and Richardson, Clint and Fisher, Charles K. and Schwab, David J.}, 
+	year = {2019},
+	pages = {1--124}, 
+}
+
+@article{mei_mean_2018,
+	title = {A mean field view of the landscape of two-layer neural networks},
+	volume = {115}, 
+	doi = {10.1073/pnas.1806579115}, 
+	number = {33}, 
+	journal = {Proceedings of the National Academy of Sciences},
+	author = {Mei, Song and Montanari, Andrea and Nguyen, Phan-Minh}, 
+	year = {2018}, 
+	pages = {E7665--E7671}, 
+}
+
+@article{rabinowitz_meta-learners_2019,
+	title = {Meta-learners' learning dynamics are unlike learners'}, 
+	journal = {arXiv:1905.01320 [cs, stat]},
+	author = {Rabinowitz, Neil C.}, 
+	year = {2019},  
+}
+
+@article{radovic_machine_2018,
+	title = {Machine learning at the energy and intensity frontiers of particle physics},
+	volume = {560}, 
+	doi = {10.1038/s41586-018-0361-2}, 
+	number = {7716},
+	urldate = {2020-05-09},
+	journal = {Nature},
+	author = {Radovic, Alexander and Williams, Mike and Rousseau, David and Kagan, Michael and Bonacorsi, Daniele and Himmel, Alexander and Aurisano, Adam and Terao, Kazuhiro and Wongjirad, Taritree}, 
+	year = {2018}, 
+	pages = {41--48}, 
+}
+
+@inproceedings{rahaman_spectral_2019,
+	title = {On the {Spectral} {Bias} of {Neural} {Networks}}, 
+	booktitle = {International {Conference} on {Machine} {Learning}},
+	author = {Rahaman, Nasim and Baratin, Aristide and Arpit, Devansh and Draxler, Felix and Lin, Min and Hamprecht, Fred and Bengio, Yoshua and Courville, Aaron}, 
+	year = {2019}, 
+	pages = {5301--5310}, 
+}
+
+@incollection{ronen_convergence_2019,
+	title = {The {Convergence} {Rate} of {Neural} {Networks} for {Learned} {Functions} of {Different} {Frequencies}}, 
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 32}, 
+	author = {Ronen, Basri and Jacobs, David and Kasten, Yoni and Kritchman, Shira}, 
+	year = {2019},
+	pages = {4761--4771}, 
+}
+
+@incollection{rotskoff_parameters_2018,
+	title = {Parameters as interacting particles: long time convergence and asymptotic error scaling of neural networks}, 
+	booktitle = {Advances in {Neural} {Information} {Processing} {Systems} 31}, 
+	author = {Rotskoff, Grant and Vanden-Eijnden, Eric}, 
+	year = {2018},
+	pages = {7146--7155}, 
+}
+
+@article{saxe_information_2019,
+	title = {On the information bottleneck theory of deep learning},
+	volume = {2019}, 
+	doi = {10.1088/1742-5468/ab3985}, 
+	number = {12}, 
+	journal = {Journal of Statistical Mechanics: Theory and Experiment},
+	author = {Saxe, Andrew M. and Bansal, Yamini and Dapello, Joel and Advani, Madhu and Kolchinsky, Artemy and Tracey, Brendan D. and Cox, David D.}, 
+	year = {2019}, 
+	pages = {124020}, 
+}
+
+@article{saxe_exact_2014,
+	title = {Exact solutions to the nonlinear dynamics of learning in deep linear neural networks}, 
+	journal = {arXiv:1312.6120 [cond-mat, q-bio, stat]},
+	author = {Saxe, Andrew M. and McClelland, James L. and Ganguli, Surya}, 
+	year = {2014},  
+}
+
+@article{sirignano_mean_2020,
+	title = {Mean field analysis of neural networks: {A} central limit theorem},
+	volume = {130}, 
+	doi = {10.1016/j.spa.2019.06.003}, 
+	number = {3}, 
+	journal = {Stochastic Processes and their Applications},
+	author = {Sirignano, Justin and Spiliopoulos, Konstantinos}, 
+	year = {2020},
+	pages = {1820--1852}, 
+}
+
+@article{e_machine_2019,
+	title = {Machine {Learning} from a {Continuous} {Viewpoint}}, 
+	journal = {arXiv:1912.12777 [cs, math, stat]},
+	author = {E, Weinan and Ma, Chao and Wu, Lei}, 
+	year = {2019},    
+}
+
+@inproceedings{xu_training_2019, 
+	series = {Lecture {Notes} in {Computer} {Science}},
+	title = {Training {Behavior} of {Deep} {Neural} {Network} in {Frequency} {Domain}}, 
+	doi = {10.1007/978-3-030-36708-4_22}, 
+	booktitle = {Neural {Information} {Processing}}, 
+	author = {Xu, Zhi-Qin John and Zhang, Yaoyu and Xiao, Yanyang}, 
+	year = {2019}, 
+	pages = {264--274}, 
+}
+
+@article{xu_frequency_2019,
+	title = {Frequency {Principle}: {Fourier} {Analysis} {Sheds} {Light} on {Deep} {Neural} {Networks}}, 
+	journal = {arXiv:1901.06523 [cs, stat]},
+	author = {Xu, Zhi-Qin John and Zhang, Yaoyu and Luo, Tao and Xiao, Yanyang and Ma, Zheng}, 
+	year = {2019},  
+}
+
+@article{yang_fine-grained_2020,
+	title = {A {Fine}-{Grained} {Spectral} {Perspective} on {Neural} {Networks}}, 
+	journal = {arXiv:1907.10599 [cs, stat]},
+	author = {Yang, Greg and Salman, Hadi},  
+	year = {2020},  
+}
+
+@inproceedings{zhang_understanding_2017,
+	title = {Understanding deep learning requires rethinking generalization}, 
+	booktitle = {The International Conference on Learning Representations},
+	author = {Zhang, Chiyuan and Bengio, Samy and Hardt, Moritz and Recht, Benjamin and Vinyals, Oriol},
+	year = {2017}, 
+}
+
+@article{zhang_deep_2018,
+	title = {Deep {Potential} {Molecular} {Dynamics}: {A} {Scalable} {Model} with the {Accuracy} of {Quantum} {Mechanics}},
+	volume = {120}, 
+	doi = {10.1103/PhysRevLett.120.143001}, 
+	number = {14}, 
+	journal = {Physical Review Letters},
+	author = {Zhang, Linfeng and Han, Jiequn and Wang, Han and Car, Roberto and E, Weinan}, 
+	year = {2018}, 
+	pages = {143001}, 
+}
+
+@article{zhang_type_2019,
+	title = {A type of generalization error induced by initialization in deep neural networks}, 
+	journal = {arXiv:1905.07777 [cs, stat]},
+	author = {Zhang, Yaoyu and Xu, Zhi-Qin John and Luo, Tao and Ma, Zheng}, 
+	year = {2019},  
+}
+
+@article{zhen_nonlinear_2018,
+	title = {Nonlinear {Collaborative} {Scheme} for {Deep} {Neural} {Networks}}, 
+	journal = {arXiv:1811.01316 [cs, stat]},
+	author = {Zhen, Hui-Ling and Lin, Xi and Tang, Alan Z. and Li, Zhenhua and Zhang, Qingfu and Kwong, Sam}, 
+	year = {2018},  
+}
+
+@article{dyson_meeting_2004,
+	title = {A meeting with {Enrico} {Fermi}},
+	volume = {427},
+	copyright = {2004 Nature Publishing Group},
+	issn = {1476-4687},
+	url = {https://www.nature.com/articles/427297a},
+	doi = {10.1038/427297a},
+	abstract = {How one intuitive physicist rescued a team from fruitless research.},
+	language = {en},
+	number = {6972},
+	urldate = {2020-06-15},
+	journal = {Nature},
+	author = {Dyson, Freeman},
+	month = jan,
+	year = {2004}, 
+	pages = {297--297},
+}
+@InCollection{lecun2012efficient,
+  author    = {LeCun, Yann A and Bottou, L{\'e}on and Orr, Genevieve B and M{\"u}ller, Klaus-Robert},
+  title     = {Efficient backprop},
+  booktitle = {Neural networks: Tricks of the trade},
+  publisher = {Springer},
+  year      = {2012},
+  pages     = {9--48},
+}
+
+@InProceedings{glorot2010understanding,
+  author    = {Glorot, Xavier and Bengio, Yoshua},
+  title     = {Understanding the difficulty of training deep feedforward neural networks},
+  booktitle = {Proceedings of the thirteenth international conference on artificial intelligence and statistics},
+  year      = {2010},
+  pages     = {249--256},
+}
+
+@InProceedings{he2015delving,
+  author    = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  title     = {Delving deep into rectifiers: Surpassing human-level performance on imagenet classification},
+  booktitle = {Proceedings of the IEEE international conference on computer vision},
+  year      = {2015},
+  pages     = {1026--1034},
+}
+
+@Comment{jabref-meta: databaseType:bibtex;}

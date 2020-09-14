@@ -1,0 +1,10 @@
+Dear Editors,
+
+Our work systematically studies how the scaling of neural network (NN) and initial weights affect the training behavior and inductive biases at the infinite-width limit for two-layer ReLU NNs. By establishing the phase diagram through theorems and experiments, we provide a clear picture about potential types of inductive biases and the corresponding conditions at different parametric regimes. Although mathematical detail about these inductive biases is not fully uncovered, our phase diagram serves as a map for future analysis.
+
+We declare that no previous publications significantly overlap with the submission. We confirm that all co-authors are aware of the current submission and consent to its review by JMLR. 
+
+We suggest Maya Gupta, Simon Lacoste-Julien, Ohad Shamir as the action editor; Weinan E, Joan Bruna, Grant M. Rotskoff, Quanquan Gu, Arthor Jacot as the reviewer.
+
+Thanks for your consideration.
+Tao Luo, Zhi-Qin John Xu, Zheng Ma, and Yaoyu Zhang

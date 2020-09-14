@@ -1,0 +1,756 @@
+\documentclass{article}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\usepackage{subfig}
+\usepackage{mlmath}
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\bl}[1]{{\color{blue}#1}}
+\newcommand{\pl}[1]{{\color{purple}#1}}
+%%%%%%%%%%%%%%%%%%%%%%%
+% \NewDocumentCommand{\tens}{t_}
+%  {%
+%   \IfBooleanTF{#1}
+%   {\tensop}
+%   {\otimes}%
+%  }
+% \NewDocumentCommand{\tensop}{m}
+%  {%
+%   \mathbin{\mathop{\otimes}\displaylimits_{#1}}%
+%  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title{Scaling Analysis and Limit Set of Parameters for Two-layer Neural Networks under Training Dynamics}
+\author{}
+
+\maketitle
+%\date{\today}
+\begin{abstract}
+
+\end{abstract}
+
+\section{Scaling Analysis and Limit Set: Finite Width}
+Given a sample set $S=\{(\vx_i,y_i)\}_{i=1}^n$ where $\vx_i\in\sR^d$, $i\in[n]$, network width $m$ and a scaling parameter $\alpha$ and $\sigma=\ReLU$, we define the two-layer neuron network and the empirical risk as follows
+\begin{align}
+    f_{\vtheta}(\vx)
+     & := \alpha\sum_{j=1}^{m}a_j\sigma(\vw_j^\T\vx+b_j),                                            \\
+    \RS(\vtheta)
+     & :=\frac{1}{2n}\sum_{i=1}^n(f_{\vtheta}^\alpha(\vx_i)-y_i)^2                                   \\
+     & =\frac{1}{2n}\sum_{i=1}^n\left(\alpha\sum_{j=1}^{m}a_j\sigma(\vw_j^\T\vx_i+b_j)-y_i\right)^2.
+\end{align}
+Let $\vtheta$ be the solution to the gradient flow
+\begin{equation}
+    \frac{\D \vtheta}{\D t}=-\nabla_{\vtheta}\RS(\vtheta).
+\end{equation}
+More precisely, $\vtheta=\mathrm{vec}(\vq_1,\ldots,\vq_m)$ with $\vq_j=(a_j,\vw_j^{\T},b_j)^\T$, $j\in[m]$ solves
+\begin{align*}
+    \frac{\D a_j}{\D t}
+     & = -\frac{1}{n}\sum_{i=1}^n\alpha\sigma(\vw_j^{\T}\vx_i+b_j) \left(\alpha\sum_{j=1}^{m}a_j\sigma(\vw_j^{\T}\vx_i+b_j)-y_i\right)           \\
+    \frac{\D \vw_j}{\D t}
+     & = -\frac{1}{n}\sum_{i=1}^n\alpha a_j\sigma'(\vw_j^{\T}\vx_i+b_j)\vx_i \left(\alpha\sum_{j=1}^{m}a_j\sigma(\vw_j^{\T}\vx_i+b_j)-y_i\right) \\
+    \frac{\D b_j}{\D t}
+     & = -\frac{1}{n}\sum_{i=1}^n\alpha a_j\sigma'(\vw_j^{\T}\vx_i+b_j) \left(\alpha\sum_{j=1}^{m}a_j\sigma(\vw_j^{\T}\vx_i+b_j)-y_i\right),
+\end{align*}
+with initial weights:
+\begin{equation}
+    a_j^0\sim N(0, \beta_1^2), \quad \vw_j^0\sim N(0, \beta_2^2 \mI_d), \quad b_j^0\sim N(0, \beta_2^2).
+\end{equation}
+Let $\bar{a}_j=\beta_1^{-1}a_j$, $\bar{\vw}_j=\beta_2^{-1}\vw_j$ and $\bar{b}_j=\beta_2^{-1}b_j$, then
+\begin{align*}
+    \frac{\D \bar{a}_j}{\D \bar{t}}
+     & = -\frac{\beta_2}{\beta_1}\frac{1}{n}\sum_{i=1}^n \alpha\sigma(\bar{\vw}_j^\T\vx_i+\bar{b}_j) \left(\alpha\beta_1\beta_2\sum_{j=1}^{m}\bar{a}_j\sigma(\bar{\vw}_j^\T\vx_i+\bar{b}_j)-y_i\right),               \\
+    \frac{\D \bar{\vw}_j}{\D \bar{t}}
+     & = -\frac{\beta_1}{\beta_2}\frac{1}{n}\sum_{i=1}^n\alpha\bar{a}_j\sigma'(\bar{\vw}_j^\T\vx_i+\bar{b}_j)\vx_i \left(\alpha\beta_1\beta_2\sum_{j=1}^{m}\bar{a}_j\sigma(\bar{\vw}_j^\T\vx_i+\bar{b}_j)-y_i\right), \\
+    \frac{\D \bar{b}_j}{\D \bar{t}}
+     & = -\frac{\beta_1}{\beta_2}\frac{1}{n}\sum_{i=1}^n\alpha\bar{a}_j\sigma'(\bar{\vw}_j^\T\vx_i+\bar{b}_j) \left(\alpha\beta_1\beta_2\sum_{j=1}^{m}\bar{a}_j\sigma(\bar{\vw}_j^\T\vx_i+\bar{b}_j)-y_i\right).
+\end{align*}
+We introduce two scaling parameters, i.e., $\kappa:=\alpha\beta_1\beta_2$ (energetic scale parameter) and $\kappa':=\frac{\beta_1}{\beta_2}$ (dynamical scale parameter), then the above dynamics can be written as
+\begin{align*}
+    \frac{\D \bar{a}_j}{\D \bar{t}}
+     & = -\frac{1}{\kappa'}\frac{1}{n}\sum_{i=1}^n \alpha\sigma(\bar{\vw}_j^\T\vx_i+\bar{b}_j) \left(\kappa\sum_{j=1}^{m}\bar{a}_j\sigma(\bar{\vw}_j^\T\vx_i+\bar{b}_j)-y_i\right),     \\
+    \frac{\D \bar{\vw}_j}{\D \bar{t}}
+     & = -\kappa'\frac{1}{n}\sum_{i=1}^n\alpha\bar{a}_j\sigma'(\bar{\vw}_j^\T\vx_i+\bar{b}_j)\vx_i \left(\kappa\sum_{j=1}^{m}\bar{a}_j\sigma(\bar{\vw}_j^\T\vx_i+\bar{b}_j)-y_i\right), \\
+    \frac{\D \bar{b}_j}{\D \bar{t}}
+     & = -\kappa'\frac{1}{n}\sum_{i=1}^n\alpha\bar{a}_j\sigma'(\bar{\vw}_j^\T\vx_i+\bar{b}_j) \left(\kappa\sum_{j=1}^{m}\bar{a}_j\sigma(\bar{\vw}_j^\T\vx_i+\bar{b}_j)-y_i\right).
+\end{align*}
+In the following discussion we will drop the ``bar''s of $a_j$, $\vw_j$, $b_j$ and correspondingly $\vtheta$, $\vq_j$ for simplicity. Define
+\begin{align}
+    f^{\kappa}_{\vtheta}(\vx)
+     & := \kappa\sum_{j=1}^{m}a_j\sigma(\vw_j^\T\vx+b_j),               \\
+    R_{S, \kappa}(\vtheta)
+     & :=\frac{1}{2n}\sum_{i=1}^n{(f^{\kappa}_{\vtheta}(\vx_i)-y_i)}^2,
+\end{align}
+then the weighted GD is
+\begin{equation}
+    \frac{\D\vq_j}{\D t} = -\frac{\alpha}{\kappa}\mM_{\kappa'}\nabla_{\vq_j}R_{S,\kappa}(\vtheta),
+\end{equation}
+where the mobility matrix
+\begin{equation}
+    \mM_{\kappa'} = -
+    \begin{pmatrix}
+        \frac{1}{\kappa'} &         &         \\
+                          & \kappa' &         \\
+                          &         & \kappa'
+    \end{pmatrix},
+\end{equation}
+the ``learning rate'' in practical application can be understood as $\eta = \frac{\alpha}{\kappa}$. Up to this $\eta$ we rescale the time furthermore to obtain an equivelent ``standardize'' dynamics:
+\begin{equation}
+    \frac{\D \vq_j}{\D t} = -\mM_{\kappa'}\nabla_{\vq_j}R_{S, \kappa}(\vtheta),
+\end{equation}
+more precisely
+\begin{align*}
+    \frac{\D a_j}{\D t}
+     & = -\frac{1}{\kappa'}\frac{1}{n}\sum_{i=1}^n \kappa\sigma(\vw_j^\T\vx_i+b_j) \left(\kappa\sum_{j=1}^{m}a_j\sigma(\vw_j^\T\vx_i+b_j)-y_i\right), \\
+    \frac{\D \vw_j}{\D t}
+     & = -\kappa'\frac{1}{n}\sum_{i=1}^n\kappa a_j\sigma'(\vw_j^\T\vx_i+b_j)\vx_i \left(\kappa\sum_{j=1}^{m}a_j\sigma(\vw_j^\T\vx_i+b_j)-y_i\right),  \\
+    \frac{\D b_j}{\D t}
+     & = -\kappa'\frac{1}{n}\sum_{i=1}^n\kappa a_j\sigma'(\vw_j^\T\vx_i+b_j) \left(\kappa\sum_{j=1}^{m}a_j\sigma(\vw_j^\T\vx_i+b_j)-y_i\right),
+\end{align*}
+whose initials are
+\begin{equation}
+    a_j^0\sim N(0,1), \quad \vw_j^0\sim N(0,\mI_d), \quad b_j^0\sim N(0, 1).
+\end{equation}
+Furthermore, given $\kappa'$ (e.g. $\mM_{\kappa'}$) let $\tilde{a}_j = \sqrt{\kappa}a_j$, $\tilde{\vw}_j = \sqrt{\kappa}\vw_j$, $\tilde{b}_j=\sqrt{\kappa}b_j$ and $\tilde{t}=\kappa t$ then
+\begin{align*}
+    \frac{\D \tilde{a}_j}{\D \tilde{t}}
+     & = -\frac{1}{\kappa'}\frac{1}{n}\sum_{i=1}^n\sigma(\tilde{\vw}_j^\T\vx_i+\tilde{b}_j) \left(\sum_{j=1}^{m}\tilde{a}_j\sigma(\tilde{\vw}_j^\T\vx_i+\tilde{b}_j)-y_i\right),        \\
+    \frac{\D \tilde{\vw}_j}{\D \tilde{t}}
+     & = -\kappa'\frac{1}{n}\sum_{i=1}^n\tilde{a}_j\sigma'(\tilde{\vw}_j^\T\vx_i+\tilde{b}_j)\vx_i \left(\sum_{j=1}^{m}\tilde{a}_j\sigma(\tilde{\vw}_j^\T\vx_i+\tilde{b}_j)-y_i\right), \\
+    \frac{\D \tilde{b}_j}{\D \tilde{t}}
+     & = -\kappa'\frac{1}{n}\sum_{i=1}^n\tilde{a}_j\sigma'(\tilde{\vw}_j^\T\vx_i+\tilde{b}_j) \left(\sum_{j=1}^{m}\tilde{a}_j\sigma(\tilde{\vw}_j^\T\vx_i+\tilde{b}_j)-y_i\right),
+\end{align*}
+where
+\begin{equation}
+    \tilde{a}^0_j\sim N(0, \kappa), \quad \tilde{\vw}_j^0\sim N(0, \kappa\mI_d), \quad \tilde{b}^0_j\sim N(0, \kappa).
+\end{equation}
+$\tilde{\vtheta}$ follows the weighted GD of
+\begin{align}
+    f_{\tilde{\vtheta}}(\vx)
+     & := \sum_{j=1}^{m}\tilde{a}_j\sigma(\tilde{\vw}_j^\T\tilde{\vx}+\tilde{b}_j), \\
+    \RS(\tilde{\vtheta})
+     & :=\frac{1}{2n}\sum_{i=1}^n(f_{\tilde{\vtheta}}^\alpha(\vx_i)-y_i)^2.
+\end{align}
+that is,
+\begin{equation}
+    \frac{\D \tilde{\vtheta}}{\D\tilde{t}} = -\mM_{\kappa'}\nabla_{\tilde{\vtheta}}\RS(\tilde{\vtheta})
+\end{equation}
+Note that $\tilde{\vtheta}(+\infty)=\sqrt{\kappa}\vtheta(+\infty)$ given $\tilde{\vtheta}^0=\sqrt{\kappa}\vtheta^0$. Let $M=m(d+2)$ and $\vTheta:\sR^+\times\sR^M\to\sR^M$ be a flow satisfying
+\begin{align}
+    \vTheta(0,\vtheta)
+     & = \vtheta,              \\
+    \vTheta(s,\vTheta(t,\vtheta))
+     & = \vTheta(s+t,\vtheta).
+\end{align}
+In particular, we define $\vTheta(t,\vtheta^0)=\vtheta(t)$ with $\vtheta(0)=\vtheta^0$ and $\tilde{\vTheta}(t,\vtheta^0)=\tilde{\vtheta}(t)$ with $\tilde{\vtheta}(0)=\tilde{\vtheta}^0$.
+\begin{defi}
+    The $\omega$-limit of a flow $\vTheta$ of a set $B$ is defined as
+    \begin{equation}
+        \omega(\vTheta,B)=\bigcap_{s\in\sR^+}\overline{\left\{\vTheta(t,\vtheta^0)\mid t\geq s, \vtheta^0\in B\right\}}.
+    \end{equation}
+\end{defi}
+The following proposition comes from the above scaling analysis.
+\begin{prop}
+    For any measurable set $B\in \sR^M$, we have
+    \begin{equation}
+        \omega(\vTheta,B)=\frac{1}{\sqrt{\kappa}}\omega(\tilde{\vTheta},\sqrt{\kappa}B)
+    \end{equation}
+\end{prop}
+\begin{rmk}
+    Set $B=B_{1/\sqrt{\kappa}}(0)$ which is a ball at origin whose radius is $\frac{1}{\sqrt{\kappa}}$ then
+    \begin{equation}
+        \omega(\vTheta, B_{1/\sqrt{\kappa}}(0))=\frac{1}{\sqrt{\kappa}}\omega(\tilde{\vTheta}, B_1(0)).
+    \end{equation}
+    So
+    \begin{align}
+         & \Prob(\vtheta^0\in B_{1/\sqrt{\kappa}}(0)) \quad (\mathrm{i.e., }\;\;\norm{\vtheta^0}\leq \frac{1}{\sqrt{\kappa}})                                                          \\
+         & \geq \Prob\left(|a_j^0|\leq \frac{1}{\sqrt{\kappa}\sqrt{M}},\; |(\vw_j^0)_\alpha|\leq \frac{1}{\sqrt{\kappa}\sqrt{M}},\; |b_j^0|\leq \frac{1}{\sqrt{\kappa}\sqrt{M}}\right) \\
+         & = \left(\Prob(\abs{a^0_j})\leq \frac{1}{\sqrt{\kappa}\sqrt{M}}\right)^M                                                                                                     \\
+         & = \left[1 - \Prob(\abs{a_j^0}>\frac{1}{\sqrt{\kappa M}})\right]^M                                                                                                           \\
+         & \geq 1 - M\Prob(\abs{a_j^0}>\frac{1}{\sqrt{\kappa M}})                                                                                                                      \\
+         & = 1 - m(d+2)\exp\left(-\frac{1}{2(d+2)\kappa m}\right).
+    \end{align}
+    Define $\kappa = m^{-\gamma}$, $\kappa'=m^{-\gamma'}$ then $\log \kappa=-\gamma\log m$, $\gamma=-\lim\limits_{m\to\infty}\frac{\log \kappa}{\log m}$ and $\gamma'=-\lim\limits_{m\to\infty}\frac{\log \kappa'}{\log m}$. If there exists $\gamma < 1$ then
+    \begin{equation}
+        \Prob(\vtheta^0\in B_{1/\sqrt{\kappa}}(0)) \geq 1 - O(1),
+    \end{equation}
+    so with high probability
+    \begin{equation}
+        \norm{\vtheta^*}_2\leq O(\frac{1}{\sqrt{\kappa}}) = O(m^{\frac{\gamma}{2}}),
+    \end{equation}
+    where $\vtheta^*=\vtheta(+\infty)$ and then the normalized $\ell^2$ norm for parameters satisfying
+    \begin{equation}
+        \frac{1}{\sqrt{m}}\norm{\vtheta^*}_2\leq O(m^{\frac{1}{2}(\gamma-1)}) \ll 1.
+    \end{equation}
+\end{rmk}
+So we have the following theorem
+\begin{thm}
+    Let $\kappa=m^{-\gamma}$ with $\gamma<1$ and assume the diameter of $\omega(\tilde{\vTheta}, B_1(0))$ is $O(1)$, then with high probability $\geq 1 - m(d+2)\exp (-\frac{1}{2(d+2)}m^{\gamma-1})$,
+    \begin{equation}
+        \frac{1}{\sqrt{m}}\norm{\vtheta^*}_2\leq C m^{\frac{1}{2}(\gamma - 1)},
+    \end{equation}
+    and
+    \begin{equation}
+        \frac{1}{\sqrt{m}}\norm{\vtheta^0 - \vtheta^*}_2\leq C m^{\frac{1}{2}(\gamma-1)},
+    \end{equation}
+    where $C$ is a constant depending on $S, \kappa'$.
+\end{thm}
+
+\section{Optimization}
+
+Now we consider the dynamics of $\tilde{\vtheta}$ by dropping ``\textasciitilde{}'' for simplicity then the two layer neural network is
+\begin{equation}
+    f_{\vtheta}(\vx) = \sum_{k=1}^{m} a_k\sigma(\vw_k\cdot\vx),
+\end{equation}
+with activation function $\sigma(z) = \ReLU(z) = \max(z, 0)$. Denote the dataset
+\begin{equation}
+    S = {\{(\vx_i, y_i)\}}_{i=1}^n \sim \fD,
+\end{equation}
+where $\vx_i$ are i.i.d.\ sampled from distribution $\fD$ over $\Omega={[\frac{1}{2},1]}^d$ such that $\norm{\vx_i}_2\leq\sqrt{d}$ and $y_i=f(\vx_i)\in[0,1]$ for all $i$.
+
+We denote $e_i = f_{\vtheta}(\vx_i) - y_i = f_{\vtheta}(\vx_i) - f(\vx_i)$ and $\ve = {(e_1, e_2, \ldots, e_n)}^{\T}$ then the empirical risk can be written as
+\begin{equation}
+    \RS(\vtheta) = \frac{1}{2n}\sum_{i=1}^n{\left(f_{\vtheta}(\vx_i)-y_i\right)}^2 = \frac{1}{2n}\ve^{\T}\ve.
+\end{equation}
+The gradient descent (GD) dynamics is
+\begin{equation}\label{eqn:gd_dyn}
+    \dot{\vtheta} = -M_{\kappa'}\nabla_{\vtheta}\RS(\vtheta),
+\end{equation}
+with a more explicit form for $a_k$ and $\vw_k$ respectively
+\begin{equation}
+    \left \{
+    \begin{aligned}
+        \dot{a}_k   & = -\frac{1}{\kappa'}\nabla_{a_k}\RS(\vtheta) = -\frac{1}{\kappa'n}\sum_{i=1}^{n}e_i\sigma(\vw_k\cdot\vx_i), \\
+        \dot{\vw}_k & = -\frac{\kappa'}{n}\sum_{i=1}^n e_i a_i\sigma'(\vw_k\cdot\vx_i)\vx_i.
+    \end{aligned}
+    \right.
+\end{equation}
+The initialization of parameters are
+\begin{align}
+     & a^0_k:=a_k(0)\sim N(0,\kappa),\quad\text{then }\bar{a}_k^0:=\bar{a}_k(0)=\frac{1}{\sqrt{\kappa}}a_k(0)\sim N(0,1)                     \\
+     & \vw_k^0:=\vw_k(0)\sim N(0, \kappa\mI_d),\quad\text{then }\bar{\vw}_k^0:=\bar{\vw}_k(0)=\frac{1}{\sqrt{\kappa}}\vw_k(0)\sim N(0,\mI_d) \\
+     & \vtheta^0 = \vtheta(0) = {\{(a_k^0, \vw_k^0)\}}_{k=1}^m, \quad\text{then }\bar{\vtheta}^0=\bar{\vtheta}(0).
+\end{align}
+The kernels of the GD dynamics are
+\begin{equation}
+    \begin{aligned}
+         & \mK^{(a)}(\vx,\vx')=\Exp_{\bar{\vw}}\sigma(\bar{\vw}\cdot\vx)\sigma(\bar{\vw}\cdot\vx'),\quad K^{(a)}_{ij}=\mK^{(a)}(\vx_i,\vx_j)                                         \\
+         & \mK^{(\vw)}(\vx,\vx')=\Exp_{(\bar{a},\bar{\vw})}\bar{a}^2\sigma'(\bar{\vw}\cdot\vx)\sigma'(\bar{\vw}\cdot\vx')\vx\cdot\vx',\quad K^{(\vw)}_{ij}=\mK^{(\vw)}(\vx_i,\vx_j). \\
+    \end{aligned}
+\end{equation}
+\begin{assump}
+    We assume that
+    \begin{equation}
+        \lambda_S^{(a)} := \lambda_{\min}\left(\mK^{(a)}\right) > 0,\quad \lambda_S^{(\vw)} := \lambda_{\min}\left(\mK^{(\vw)}\right) > 0,
+    \end{equation}
+    and denote
+    \begin{equation}
+        \lambda_S:=\min \{\lambda_S^{(a)},\lambda_S^{(\vw)}\}\leq d.
+    \end{equation}
+\end{assump}
+
+\noindent The Gram matrices $\mG^{(a)},\mG^{(\vw)}$ and $\mG$ hhave the following expression
+\begin{equation}
+    \begin{aligned}
+         & G^{(a)}_{ij}(\vtheta)=\frac{1}{\kappa' m}\sum_{k=1}^m\sigma(\vw_k\cdot\vx_i)\sigma(\vw_k\cdot\vx_j),                        \\
+         & G^{(\vw)}_{ij}(\vtheta)=\frac{\kappa'}{m}\sum_{k=1}^m a_k^2\sigma'(\vw_k\cdot\vx_i)\sigma'(\vw_k\cdot\vx_j)\vx_i\cdot\vx_j, \\
+         & \mG=\mG^{(a)}+\mG^{(\vw)}.
+    \end{aligned}
+\end{equation}
+\begin{rmk}
+    Notice that
+    \begin{equation}
+        \begin{aligned}
+            \mG^{(a)}(\vtheta^0)   & \approx\frac{\kappa}{\kappa'}\mK^{(a)}, \\
+            \mG^{(\vw)}(\vtheta^0) & \approx\kappa\kappa'\mK^{(\vw)}.
+        \end{aligned}
+    \end{equation}
+\end{rmk}
+\begin{lem}\label{lem1}
+    For any $\delta\in(0,1)$ with probability at least $1-\delta$ over initialization, we have
+    \begin{equation}\label{eqn:lem1}
+        \max\limits_{k,\alpha}\left\{\abs{a_k^0},\; \abs{{(w^0_k)}_{\alpha}}\right \}\leq\sqrt{\kappa}\sqrt{2\log\frac{2m(d+1)}{\delta}},
+    \end{equation}
+\end{lem}
+\begin{proof}
+    If $\rX \sim N(0, 1)$, then $\Prob(\abs{\rX} > \eps) \leq 2\E^{-\frac{1}{2}\eps^2}$ for all $\eps > 0$. Since $\bar{a}^0_k\sim N(0,1)$, ${(\bar{w}_k^0)}_{\alpha}\sim N(0,1)$ for $k=1, 2, \ldots, m,\; \alpha =1,\ldots,d$ and they are all independent, by setting
+    \begin{equation}
+        \eps = \sqrt{2\log\frac{2m(d+1)}{\delta}},
+    \end{equation}
+    one can obtain
+    \begin{equation}
+        \begin{aligned}
+            \Prob\left(\max\limits_{k,\alpha}\left\{\abs{\bar{a}_k^0},\; \abs{{(\bar{w}^0_k)}_{\alpha}}\right \}>\eps\right)
+             & = \Prob\left(\bigcup\limits_{k=1}^m\left(\abs{\bar{a}_k^0}>\eps\right)\cup\left(\bigcup\limits_{\alpha=1}^d\left(\abs{{(\bar{w}_k^0)}_{\alpha}}>\eps\right)\right)\right) \\
+             & \leq \sum_{k=1}^m \Prob\left(\abs{\bar{a}_k^0}>\eps\right) + \sum_{k=1}^m\sum_{\alpha=1}^d \Prob\left(\abs{{(\bar{w}^0_k)}_{\alpha}}>\eps\right)                          \\
+             & \leq 2m \E^{-\frac{1}{2}\eps^2} + 2md \E^{-\frac{1}{2}\eps^2}                                                                                                             \\
+             & = 2m(d+1)\E^{-\frac{1}{2}\eps^2}                                                                                                                                          \\
+             & = \delta.
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{lem}
+    For any $\delta\in(0,1)$ with probability at least $1-\delta$ over initialization, we have
+    \begin{equation}
+        \RS(\vtheta^0)\leq\frac{1}{2}\left[1 + 2d\left(\log\frac{4M(d+1)}{\delta}\right)\left(2+3\sqrt{2\log(8/\delta)}\right)\kappa\sqrt{m}\right]^2.
+    \end{equation}
+\end{lem}
+\begin{proof}
+    From Lemma~\ref{lem1} we know that with probability at least $1-\delta/2$,
+    \begin{equation}
+        \abs{\bar{a}_k^0} \leq \sqrt{2\log\frac{4m(d+1)}{\delta}} \quad \text{and} \quad \norm{\bar{\vw}_k^0}_2 \leq \sqrt{2d\log\frac{4m(d+1)}{\delta}}.
+    \end{equation}
+    Let
+    \begin{equation}
+        \fF = \{g(\bar{a},\bar{\vw}) \mid g(\bar{a},\bar{\vw}):=\bar{a}\sigma(\bar{\vw}\cdot\vx),\vx\in\Omega \},
+    \end{equation}
+    then with prob$\geq 1-\delta/2$
+    \begin{equation}
+        \abs{g(\bar{a}^0_k,\bar{\vw}^0_k)}\leq\sqrt{d}\sqrt{2\log\frac{4m(d+1)}{\delta}}\sqrt{2d\log\frac{4m(d+1)}{\delta}}=2d\log\frac{4m(d+1)}{\delta}
+    \end{equation}
+    Then
+    \begin{equation}
+        \begin{aligned}
+            \frac{1}{\kappa m}\sup_{\vx\in\Omega}\abs{f_{\vtheta^0}(\vx)}
+             & =\sup_{\vx\in\Omega}\left\lvert \frac{1}{m}\sum_{k=1}^m \bar{a}_k^0\sigma(\bar{\vw}_k^0\cdot\vx)-\Exp_{(\bar{a},\bar{\vw})}\bar{a}\sigma(\bar{\vw}\cdot\vx)\right\rvert \\
+             & \leq 2\Rad_{\bar{\vtheta}^0}(\fF) + 6d \left(\log\frac{4m(d+1)}{\delta}\right)\sqrt{\frac{2\log(8/\delta)}{m}}.
+        \end{aligned}
+    \end{equation}
+    The Rademacher complexity can be computed assume
+    \begin{equation}
+        \begin{aligned}
+            \Rad_{\bar{\vtheta}^0}(\fF)
+             & =\frac{1}{m}\Exp_{\tau}\left[\sup_{\vx\in\Omega}\sum_{k=1}^m\tau_k\bar{a}^0_k\sigma(\bar{\vw^0_k\cdot\vx})\right]                   \\
+             & \leq\frac{1}{m}\sqrt{2\log\frac{4m(d+1)}{\delta}}\Exp_{\tau}\left[\sup_{\vx\in\Omega}\sum_{k=1}^m\tau_k\bar{\vw}^0_k\cdot\vx\right] \\
+             & \leq\sqrt{2\log\frac{4m(d+1)}{\delta}}\sqrt{2d\log\frac{4m(d+1)}{\delta}}\frac{\sqrt{d}}{\sqrt{m}}                                  \\
+             & =\frac{2d\log\frac{4m(d+1)}{\delta}}{\sqrt{m}}.
+        \end{aligned}
+    \end{equation}
+    So
+    \begin{equation}
+        \sup_{\vx\in\Omega}\abs{f_{\vtheta^0}(\vx)}\leq 2d\left(\log\frac{4m(d+1)}{\delta}\right)(2+3\sqrt{2\log(8/\delta)}\kappa\sqrt{m}),
+    \end{equation}
+    and
+    \begin{equation}
+        \begin{aligned}
+            \RS(\vtheta^0)
+             & \leq\frac{1}{2n}\sum_{i=1}^n{\left(1+\abs{f_{\vtheta}(\vx_i)}\right)}^2                                                          \\
+             & \leq\frac{1}{2}{\left[1+2d\left(\log\frac{4m(d+1)}{\delta}\right)\left(2+3\sqrt{2\log(8/\delta)}\kappa\sqrt{m}\right)\right]}^2.
+        \end{aligned}
+    \end{equation}
+\end{proof}
+\begin{defi}[Sub-expenential norm]
+    If $\rX$ is a random variable, we define the sub-expenential norm as
+    \begin{equation}
+        \norm{\rX}_{\psi_1} := \inf\{s>0 \mid \Exp[\exp(\abs{\rX}/s)]\leq 2\},
+    \end{equation}
+    and we let $C_4:=\left\lVert\norm{\vw}_2^2\right\rVert_{\psi_1} = \norm{\chi^2(d)}_{\psi_1}$ where $\vw\sim N(0,\mI_d)$ and $\chi^2(d)$ is $\chi^2$ distribution with $d$ degrees of freedom whose probability density function is
+    \begin{equation}
+        f_z(z)=\frac{1}{2^{d/2}\Gamma(d/2)}z^{d/2-1}e^{-z/2}.
+    \end{equation}
+    Thus $C_{4}<+\infty$, $\Exp_{\chi^2(d)}\exp(\abs{z}/2)=+\infty$ and $C_{4}\geq 2$.
+\end{defi}
+\begin{rmk}
+    Suppose that $\vw\sim N(0,\mI_d)$, $a\sim N(0,1)$ and given $\vx_i,\vx_j \in\Omega$,
+    \begin{enumerate}
+        \item consider $\rX:=\sigma(\vw\cdot\vx_i)\sigma(\vx\cdot\vx_j)$ and $\rZ:=\norm{\vw}^2_2=\chi^2(d)$, then $\abs{\rX}\leq d\norm{\vw}^2_2=d\rZ$ and
+              \begin{equation}
+                  \begin{aligned}
+                      \norm{\rX}_{\phi_1}
+                       & =\inf\{s>0\mid\Exp_{\rX}\exp(\abs{\rX}/s)\leq 2\}                                                   \\
+                       & =\inf\{s>0\mid\Exp_{\vw}\exp\left(\abs{\sigma(\vw\cdot\vx_i)\sigma(\vw\cdot\vx_j)}/s\right)\leq 2\} \\
+                       & \leq\inf\{s>0\mid\Exp_{\vw}\exp(d\norm{\vw}^2_2/s)\leq 2\}                                          \\
+                       & =\inf\{s>0\mid\Exp_{\rZ}\exp(d\abs{rZ}/s)\leq 2\}                                                   \\
+                       & =d\inf\{s>0\mid\Exp_{\rZ}\exp(\abs{\rZ}/s)\leq 2\}                                                  \\
+                       & =d\norm{\chi^2(d)}_{\psi_1}                                                                         \\
+                       & \leq dC_{4}.
+                  \end{aligned}
+              \end{equation}
+        \item consider $\rX:=a^2\sigma'(\vw\cdot\vx_i)\sigma'(\vw\cdot\vx_j)\vx_i\cdot\vx_j$ then $\abs{\rX}\leq d\abs{a}^2\leq d\rZ$ and $\norm{\rX}_{\psi_1}\leq dC_{4}$.
+    \end{enumerate}
+\end{rmk}
+\begin{thm}[Sub-expenential Bernstein's inequality]\label{thm:sub_exp}
+    Suppose $\rX_1,\ldots,\rX_m$ are sub-expenential random variables with $\Exp\rX_1=\mu$, then $\forall s\geq 0$ we have
+    \begin{equation}
+        \Prob\left(\abs{\frac{1}{m}\sum_{k=1}^m\rX_k-\mu}\geq s\right)\leq 2\exp\left(-C_0 m \min\left(\frac{s^2}{\norm{\rX_1}^2_{\psi_1}},\frac{s}{\norm{\rX_1}_{\psi_1}}\right)\right),
+    \end{equation}
+    where $C_0$ is an absolute constant.
+\end{thm}
+\begin{lem}\label{lem:lambda_min}
+    For any $\delta\in(0,1)$ if $m\geq\frac{16n^2d^2C_4}{C_0\lambda_S^2}\log\frac{4n^2}{\delta}$ then with probability at least $1-\delta$ over initialization, we have
+    \begin{equation}
+        \lambda_{\min}\left(\mG(\vtheta^0)\right)\geq\frac{3}{4}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right).
+    \end{equation}
+\end{lem}
+\begin{proof}
+    $\forall \eps > 0$, we define
+    \begin{equation}
+        \begin{aligned}
+            \Omega_{ij}^{(a)}   & :=\left\{\vtheta^0 \mid \left\lvert \frac{\kappa'}{\kappa}G^{(a)}_{ij}(\vtheta^0) - K^{(a)}_{ij}\right\rvert \leq \frac{\eps}{n} \right\}        \\
+            \Omega_{ij}^{(\vw)} & := \left\{\vtheta^0 \mid \left\lvert \frac{1}{\kappa\kappa'}G^{(\vw)}_{ij}(\vtheta^0) - K^{(\vw)}_{ij}\right\rvert \leq \frac{\eps}{n} \right\}.
+        \end{aligned}
+    \end{equation}
+    Then from Theorem~\ref{thm:sub_exp} and Remark~\ref{lem:lambda_min} we know if $\frac{\eps}{ndC_4}\leq 1$ then
+    \begin{equation}
+        \begin{aligned}
+            \Prob(\Omega^{(a)}_{ij})   & \geq 1-2\exp\left(-\frac{mC_0\eps^2}{n^2d^2C_4^2}\right), \\
+            \Prob(\Omega^{(\vw)}_{ij}) & \geq 1-2\exp\left(-\frac{mC_0\eps^2}{n^2d^2C_4^2}\right),
+        \end{aligned}
+    \end{equation}
+    so with $\mathrm{prob}\geq \left[1-2\exp\left(-\frac{mC_0\eps^2}{n^2d^2C_4^2}\right)\right]^{2n^2} \geq 1-4n^2\exp\left(-\frac{mC_0\eps^2}{n^2d^2C_4^2}\right)$, we have
+    \begin{equation}
+        \begin{aligned}
+             & \norm{\frac{\kappa'}{\kappa}\mG^{(a)}(\vtheta^0) - \mK^{(a)}}_F \leq \eps,      \\
+             & \norm{\frac{1}{\kappa\kappa'}\mG^{(\vw)}(\vtheta^0) - \mK^{(\vw)}}_F \leq \eps,
+        \end{aligned}
+    \end{equation}
+    Hence by taking $\eps=\lambda_S/4$, that is, $\delta=4n^2\exp\left(-\frac{mC_0\lambda_S^2}{16n^2d^2C_4^2}\right)$
+    \begin{equation}
+        \begin{aligned}
+            \lambda_{\min}\left(\mG(\vtheta^0)\right)
+             & \geq\lambda_{\min}\left(\mG^{(a)}(\vtheta^0)\right) + \lambda_{\min}\left(\mG^{(\vw)}(\vtheta^0)\right)                          \\
+             & \geq\frac{\kappa}{\kappa'}\lambda_S^{(a)}-\frac{\kappa}{\kappa'} \norm{\frac{\kappa'}{\kappa}\mG^{(a)}(\vtheta^0) - \mK^{(a)}}_F \\
+             & \quad + \kappa\kappa'\lambda_S^{(\vw)} - \kappa\kappa'\norm{\frac{1}{\kappa\kappa'}\mG^{(\vw)}(\vtheta^0) - \mK^{(\vw)}}_F       \\
+             & \geq\frac{\kappa}{\kappa'}(\lambda_S^{(a)}-\eps)+\kappa\kappa'(\lambda_S^{(\vw)}-\eps)                                           \\
+             & \geq\frac{3}{4}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right).
+        \end{aligned}
+    \end{equation}
+\end{proof}
+
+\noindent In the following we denote
+\begin{equation}
+    t^* = \inf\{t \mid \vtheta(t)\notin \mathcal{N}(\vtheta^0)\},
+\end{equation}
+where
+\begin{equation}
+    \mathcal{N}(\vtheta^0) := \left\{\theta \mid \norm{\mG(\vtheta) - \mG(\vtheta^0)}_F\leq \frac{1}{4}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right)\right\}.
+\end{equation}
+Then we have the following lemma
+\begin{lem}\label{lem:exp_RS}
+    For any $\delta\in(0,1)$, if $m\geq\frac{16n^2M^4d^2C_4^2}{\lambda_S^2C_0}\log\frac{4n^2}{\delta}$, then with probability at least $1-\delta$ over initialization, we have for any $t\in[0, t^*)$
+    \begin{equation}
+        \RS(\vtheta(t)) \leq \exp\left(-\frac{m}{n}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right)\right)\RS(\vtheta^0).
+    \end{equation}
+\end{lem}
+\begin{proof}
+    From Lemma~\ref{lem:lambda_min}, for any $\delta\in(0,1)$ with probability at least $1-\delta$ and for any $\vtheta\in\mathcal{N}(\vtheta^0)$,
+    \begin{equation}
+        \begin{aligned}
+            \lambda_{\min}\left(\mG(\vtheta)\right)
+             & \geq \lambda_{\min}\left(\mG(\vtheta^0)\right) - \norm{\mG(\vtheta) - \mG(\vtheta^0)}_F                                                                                                          \\
+             & \geq \frac{3}{4}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right) - \frac{1}{4}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right) \\
+             & = \frac{1}{2}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right).
+        \end{aligned}
+    \end{equation}
+    Note that
+    \begin{equation}
+        G_{ij} = G_{ij}^{(a)}+G^{\vw}_{ij}=\frac{1}{m}\nabla_{a}f_{\vtheta}(\vx_i)\cdot\nabla_{a}f_{\vtheta}(\vx_j)\frac{1}{\kappa'}+\frac{1}{m}\nabla_{\vw}f_{\vtheta}(\vx_i)\cdot\nabla_{\vw}f_{\vtheta}(\vx_j)\kappa',
+    \end{equation}
+    and
+    \begin{equation}
+        \begin{aligned}
+            \nabla_{a}\RS(\vtheta)   & =\frac{1}{n}\sum_{i=1}^{n}e_i\nabla_{a}f_{\vtheta}(\vx_i),    \\
+            \nabla_{\vw}\RS(\vtheta) & = \frac{1}{n}\sum_{i=1}^{n}e_i\nabla_{\vw}f_{\vtheta}(\vx_i),
+        \end{aligned}
+    \end{equation}
+    so
+    \begin{equation}
+        \frac{m}{n^2}\ve^{\T}\mG^{(a)}\ve=\frac{1}{\kappa'}\nabla_a\RS\cdot\nabla_{a}\RS+\kappa'\nabla_{\vw}\RS\cdot\nabla_{\vw}\RS,
+    \end{equation}
+    Then finally we get
+    \begin{equation}
+        \begin{aligned}
+            \frac{\D}{\D t}\RS(\vtheta(t))
+             & =-\frac{1}{\kappa'}\nabla_a\RS\cdot\nabla_a\RS+\kappa'\nabla_{\vw}\cdot\nabla_{\vw}\RS,                            \\
+             & =-\frac{m}{n^2}\ve^{\T}\mG\ve,                                                                                     \\
+             & \leq -\frac{2m}{n}\lambda_{\min}\left(\mG(\vtheta(t))\right)\RS(\vtheta(t))                                        \\
+             & \leq -\frac{m}{n}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right)\RS(\vtheta(t)),
+        \end{aligned}
+    \end{equation}
+    and an integration yields the result.
+\end{proof}
+
+\begin{prop}\label{prop:a_w}
+    For any $\delta\in(0,1)$ if $m\geq\max\left\{\frac{16n^2d^2C_4^2}{\lambda_S^2C_0}\log\frac{8n^2}{\delta}, \frac{4\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{\kappa\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)}\right\}$ then with probability at least $1-\delta$ over initialization, for any $t\in[0, t^\ast)$ and any $k\in [m]$,
+    \begin{equation}
+        \begin{aligned}
+             & |a_k(t) - a_k(0)| \leq 2\sqrt{\kappa}\xi_1 p, & \norm{\vw_k(t) - \vw_k(0)}_2 \leq 2\sqrt{\kappa}\xi_1 p, \\
+             & |a_k(0)| \leq \sqrt{\kappa}\xi_1, \quad       & \norm{\vw_k(0)}_2\leq\sqrt{\kappa}\xi_1,
+        \end{aligned}
+    \end{equation}
+    where
+    \begin{equation}
+        \xi_1:=\sqrt{2d\log\frac{4m(d+1)}{\delta}},\quad p:=\frac{2\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)}.
+    \end{equation}
+\end{prop}
+\begin{proof}
+    Let $\alpha_k(t) = \max\limits_{s\in[0,t]}\abs{a_k(s)}$ and $\omega_k(t) = \max\limits_{s\in[0,t]}\norm{\vw_k(s)}_2$, note that
+    \begin{equation}
+        \begin{aligned}
+            \abs{\nabla_{a_k}\RS}^2    & =\left\lvert\frac{1}{n}\sum_{i=1}^n e_i\sigma(\vw_k\cdot\vx_i)\right\rvert^2\leq 2d\norm{\vw_k}^2_2\RS(\vtheta),        \\
+            \norm{\nabla_{\vw_k}\RS}^2 & =\left\lVert\frac{1}{n}\sum_{i=1}^n e_i a_k\sigma'(\vw_k\cdot\vx_i)\vx_i\right\rVert^2_2\leq 2d\abs{a_k}^2\RS(\vtheta).
+        \end{aligned}
+    \end{equation}
+    From Lemma~\ref{lem:exp_RS} if $m\geq \frac{16n^2d^2C_4^2}{\lambda_s^2C_0}\log\frac{8n^2}{\delta}$ then with probability at least $1 - \delta/2$,
+    \begin{equation}
+        \begin{aligned}
+            \abs{a_k(t) - a_k(0)}
+             & \leq\int_0^t\abs{\nabla_{a_k}\RS(\vtheta(s))}\diff{s}                                                                                                                             \\
+             & \leq\sqrt{2d}\int_{0}^{t} \omega_k(t)\sqrt{\RS(\vtheta(s))}\diff{s}                                                                                                               \\
+             & \leq\sqrt{2d}\omega_k(t)\int_{0}^{t}\sqrt{\RS(\vtheta^0)}\exp\left(-\frac{m}{2n}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right)s\right)\diff{s} \\
+             & \leq \frac{2\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda^{(a)}_S/\kappa'+\kappa'\lambda_S^{(\vw)}\right)}\omega_k(t)                                                     \\
+             & =p\omega_k(t),
+        \end{aligned}
+    \end{equation}
+    where $p := \frac{2\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)}$. On the other hand,
+    \begin{equation}
+        \begin{aligned}
+            \norm{\vw_k(t) - \vw_k(0)}_2
+             & \leq \int_{0}^{t} \norm{\nabla_{\vw_k}\RS(\vtheta(s))}_2\diff{s}                                                                                                                      \\
+             & \leq \sqrt{2d} \int_{0}^t \alpha_k(t)\sqrt{\RS(\vtheta(s))} \diff{s}                                                                                                                  \\
+             & \leq \sqrt{2d} \alpha_k(t) \int_{0}^{t} \sqrt{\RS(\vtheta^0)}\exp\left(-\frac{m}{2n}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right)s\right)\diff{s} \\
+             & \leq \frac{2\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda^{(a)}_S/\kappa'+\kappa'\lambda_S^{(\vw)}\right)}\alpha_k(t)                                                         \\
+             & = p\alpha_k(t).
+        \end{aligned}
+    \end{equation}
+    So
+    \begin{align}
+        \alpha_k(t) & \leq \alpha_k(0) + p\omega_k(t),                  \\
+        \omega_k(t)
+                    & \leq \omega_k(0) + p\alpha_k(t)                   \\
+                    & \leq \omega_k(0) + p(\alpha_k(0) + p\omega_k(t)).
+    \end{align}
+    From Lemma~\ref{lem1} with probability at least $1 - \delta/2$
+    \begin{align}
+        \alpha_k(0) & = \abs{a_k(0)} \leq \sqrt{\kappa}\xi_1,      \\
+        \omega_k(0) & = \norm{\vw_k(0)}_2 \leq \sqrt{\kappa}\xi_1.
+    \end{align}
+    Since
+    \begin{equation}
+        m \geq \frac{4\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{\kappa\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)},
+    \end{equation}
+    so
+    \begin{equation}
+        p=\frac{2\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{\kappa\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)}\leq \frac{1}{2},
+    \end{equation}
+    and then
+    \begin{equation}
+        \omega_k(t)\leq \xi_1 \sqrt{\kappa} + p\xi_1\sqrt{\kappa} + p^2\omega_k(t) \leq \sqrt{\kappa}\xi_1+\frac{1}{2}\sqrt{\kappa}\xi_1+\frac{1}{4}\omega_k(t).
+    \end{equation}
+    Thus
+    \begin{equation}
+        \omega_k(t)\leq 2\sqrt{\kappa}\xi_1,
+    \end{equation}
+    similarly
+    \begin{equation}
+        \alpha_k(t)\leq 2\sqrt{\kappa}\xi_1,
+    \end{equation}
+    Finally one can obtain
+    \begin{align}
+         & |a_k(t)-a_k(0)|\leq p\omega_k(t)\leq 2\sqrt{k}\xi_1 p,                 \\
+         & \norm{\vw_k(t)-\vw_k(0)}_2\leq p\alpha_k(t)\leq 2\sqrt{\kappa}\xi_1 p,
+    \end{align}
+    which ends the proof.
+\end{proof}
+
+\begin{thm}[Main result]\label{thm:main}
+    For any $\delta\in(0,1)$, if
+    \begin{align}
+        m\geq\max\Bigg\{ & \frac{16n^2d^2C_4^2}{\lambda_S^2C_0}, \frac{4\sqrt{2d}n\sqrt{\RS(\vtheta^0)}}{\kappa\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)}, \frac{128\sqrt{2}d^{5/2}n^2\left(\log\frac{8m(d+1)}{\delta}\sqrt{\RS(\vtheta^0)}\right)}{(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)})^2}\frac{1}{\kappa\kappa'}, \\
+                         & \frac{\kappa'}{\kappa}\frac{1280\delta^{-1}d^3n^3\left(\log\frac{8m(d+1)}{\delta}\right)^{3/2}\sqrt{\RS(\vtheta^0)}}{(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)})^2}\Bigg\},
+    \end{align}
+    then with probability at least $1-\delta$ over initialization, we have for all $t\geq 0$
+    \begin{equation}
+        \RS(\vtheta(t))\leq\exp\left(-\frac{m}{n}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right)\right)\RS(\vtheta^0).
+    \end{equation}
+\end{thm}
+
+\begin{proof}
+    From Lemma~\ref{lem:exp_RS}, it is sufficient to prove $t^* = +\infty$. Suppose $t^* < +\infty$ and let
+    \begin{equation}
+        g^{(a)}_{ij}(\vw) := \sigma(\vw\cdot\vx_i)\sigma(\vw\cdot\vx_j),
+    \end{equation}
+    then
+    \begin{equation}
+        \abs{G_{ij}^{(a)}(\vtheta(t^*)) - G_{ij}^{(a)}(\vtheta(0))} \leq \frac{1}{m\kappa'}\sum_{k=1}^m \abs{g^{(a)}_{ij}(\vw_k(t^*)) - g^{(a)}_{ij}(\vw_k(0))}.
+    \end{equation}
+    By mean value theorem, for somce $c\in(0,1)$,
+    \begin{equation}
+        \abs{g^{(a)}_{ij}(\vw_k(t^*)) - g^{(a)}_{ij}(\vw_k(0))} \leq \norm{\nabla g_{ij}\left(c\vw_k(t^*) + (1-c)\vw_k(0)\right)}_2\norm{\vw_k(t^*) - \vw_k(0)}_2,
+    \end{equation}
+    where
+    \begin{equation}
+        \nabla g_{ij}(\vw)=\sigma'(\vw\cdot\xi_i)\sigma(\vw\cdot\vx_j)\vx_i+\sigma(\vw\cdot\vx_i)\sigma'(\vw\cdot\vx_j)\vx_j,
+    \end{equation}
+    and
+    \begin{equation}
+        \norm{\nabla g_{ij}(\vw)}_2\leq 2d\norm{\vw}_2.
+    \end{equation}
+    From Proposition~\ref{prop:a_w},
+    \begin{equation}
+        \norm{c\vw_k(t^*) + (1-c)\vw_k(0)}_2 \leq \norm{\vw_k(0)}_2 + \norm{\vw_k(t^*) - \vw_k(0)}_2 \leq \sqrt{\kappa}\xi + 2\sqrt{\kappa}\xi p \leq 2\sqrt{\kappa}\xi,
+    \end{equation}
+    with $\xi = \sqrt{2d\log\frac{8m(d+1)}{\delta}}$. So
+    \begin{equation}
+        \abs{G_{ij}^{(a)}(\vtheta(t^*)) - G_{ij}^{(a)}(\vtheta(0))} \leq 2d\cdot 2\sqrt{\kappa}\xi p \frac{1}{\kappa'} = 8d\xi^2\frac{\kappa}{\kappa'}p,
+    \end{equation}
+    and
+    \begin{equation}
+        \begin{aligned}
+            \norm{\mG^{(a)}(\vtheta(t^*)) - \mG^{(a)}(\vtheta(0))}_F
+             & \leq 8dn\xi^2\frac{\kappa}p                                                                                                                           \\
+             & = \frac{32\sqrt{2}d^{5/2}n^2(\log\frac{8m(d+1)}{\delta})\sqrt{\RS(\vtheta^0)}}{m\kappa'\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)} \\
+             & \leq \frac{1}{4}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right),
+        \end{aligned}
+    \end{equation}
+    if we choose
+    \begin{equation}\label{cond:m1}
+        m\geq\frac{128\sqrt{2}d^{5/2}n^2(\log(8m(d+1)/\delta))\sqrt{\RS(\vtheta^0)}}{\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)^2}\frac{1}{\kappa\kappa'}.
+    \end{equation}
+    Then we define
+    \begin{equation}
+        D_{i,k}=\{\omega_k(0)\mid \norm{\vw_k(t^*)-\vw_k(0)}_2\leq 2\sqrt{2}\xi p,\;\sigma'(\vw_k(t^*)\cdot\vx_i)\not=\sigma'(\vw_k(0)\cdot\vx_i)\}.
+    \end{equation}
+    If $|\vw_k(0)\cdot\vx_i|>4\sqrt{\kappa}\xi p\sqrt{d}$, then
+    \begin{equation}
+        |\vw_k(t^*)\cdot\vx_i-\vw_k(0)\cdot\vx_i|\leq\norm{\vx_i}_2\norm{\vw_k(t^*)-\vw_k(0)}_2\leq\sqrt{d}2\sqrt{\kappa}\xi p,
+    \end{equation}
+    which means $D_{i,k}$ is empty. Recall that $\vx_i\in[\frac{1}{2}, 1]^d$ thus $|\vw_k(0)\cdot\vx_i|\geq\frac{1}{2}\sqrt{d}|\vx_k(0)\cdot\hat{\vx}_i|$ then
+    \begin{equation}
+        \begin{aligned}
+            \Prob(D_{i,k})
+             & \leq\Prob(|\vw_k(0)\cdot\vx_i|\leq 4\sqrt{\kappa}p\sqrt{d})                               \\
+             & \leq\Prob(|\vw_k(0)\cdot\hat{\vx}_i|\leq 8\sqrt{\kappa}\xi p)                             \\
+             & = \Prob(|\vw_k(0)\cdot(1,0,0,\ldots,0)^{\T}|\leq 8\sqrt{\kappa}\xi p)                     \\
+             & = \Prob(|(\vw_k(0))_1|\leq 8\sqrt{\kappa}\xi p)                                           \\
+             & = 2\int_0^{8\sqrt{\kappa}\xi p}\frac{1}{\sqrt{2\pi\kappa}}e^{-\frac{x^2}{\kappa}}\diff{x} \\
+             & \leq \frac{16}{\sqrt{2\pi}}\xi p                                                          \\
+             & \leq 4\xi p.
+        \end{aligned}
+    \end{equation}
+    Then
+    \begin{equation}
+        \begin{aligned}
+            |G^{(\vw)}_{ij}(\vtheta(t^*))-G^{(\vw)}_{ij}(\vtheta(0))|
+             & \leq \frac{\kappa'|\vx_i\cdot\vx_j|}{m}\sum_{k=1}^m\Big|a_k^2(t^*)\sigma'(\vw_k(t^*)\cdot\vx_i)\sigma'(\vw_k(t^*)\cdot\vx_j) \\
+             & \quad\quad\quad\quad\quad\quad\quad\quad -a_k^2(0)\sigma'(\vw_k(0)\cdot\vx_i)\sigma'(\vw_k(0)\cdot\vx_j)\Big|                \\
+             & \leq \frac{\kappa'd}{m}\sum_{k=1}^m\left[a_k^2(t^*)|D_{k,i,j}|+|a_k^2(t^*)-a_k^2(0|\right],
+        \end{aligned}
+    \end{equation}
+    where
+    \begin{equation}
+        D_{k,i,j}:=\sigma'(\vw_k(t^*)\cdot\vx_i)\sigma'(\vw_k(t^*)\cdot\vx_j)-\sigma'(\vw_k(0)\cdot\vx_i)\sigma'(\vw_k(0)\cdot\vx_j),
+    \end{equation}
+    then
+    \begin{equation}
+        \Exp|D_{k,i,j}|\leq\Prob(D_{k,i}\cup D_{k,j})\leq 8\xi p.
+    \end{equation}
+    At the same time
+    \begin{equation}
+        \begin{aligned}
+            |a_k^2(t^*)-a_k^2(0)|
+             & \leq|a_k(t^*)-a_k(0)|^2+2|a_k(0)||a_k(t^*)-a_k(0)|                 \\
+             & \leq (2\sqrt{\kappa}\xi p)^2+2\sqrt{\kappa}\xi 2\sqrt{\kappa}\xi p \\
+             & =4\kappa\xi^2 p^2+4\kappa\xi^2 p                                   \\
+             & \leq 6\kappa\xi^2 p,
+        \end{aligned}
+    \end{equation}
+    so
+    \begin{equation}
+        a_k^2(t^*)\leq |a_k^2(t^*)-a_k^2(0)|+a_k^2(0) \leq 4\kappa\xi^2 p^2+4\kappa\xi^2 p+(\sqrt{\kappa}\xi)^2\leq 4\kappa\xi^2.
+    \end{equation}
+    Then
+    \begin{equation}
+        \begin{aligned}
+            \Exp\sum_{i,j=1}^n\Big|G_{ij}^{(\vw)}(\vtheta(t^*))-G_{ij}^{(\vw)}(\vtheta(0))\
+            Big|
+             & \leq\sum_{i,j=1}^n\frac{\kappa' d}{m}\sum_{k=1}^m\left(4\kappa\xi^2\Exp|D_{k,i,j}+6\kappa\xi^2 p|\right) \\
+             & \leq \kappa' d n^2(32\kappa\xi^3 p + 6\kappa\xi^2 p)                                                     \\
+             & \leq 40\kappa\kappa' dn^2\xi^3 p.
+        \end{aligned}
+    \end{equation}
+    By Markov inequality, with probability at least $1-\delta/2$ we have
+    \begin{equation}
+        \begin{aligned}
+            \norm{G^{(\vw)}(\vtheta(t^*))-G^{(\vw)}(\vtheta(0))}_F
+             & \leq \sum_{i,j=1}^n\Big|G_{ij}^{(\vw)}(\vtheta(t^*))-G^{(\vw)}_{ij}(\vtheta(0))\Big|                                                                                                                \\
+             & \leq 40\kappa\kappa' dn^2\xi^3 p\delta^{-1}                                                                                                                                                         \\
+             & \leq 40\kappa\kappa' dn^2 2\sqrt{2}d^{3/2}\left(\log\frac{8m(d+1)}{\delta}\right)^{3/2}\frac{2\sqrt{2}n\sqrt{\RS(\vtheta^0)}}{m\kappa\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)} \\
+             & \leq\frac{320\kappa' d^3n^3\left(\log\frac{8m(d+1)}{\delta}\right)^{3/2}\sqrt{\RS(\vtheta^0)}\delta^{-1}}{m\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)}                           \\
+             & \leq \frac{1}{4}\left(\frac{\kappa}{\kappa'}\lambda_S^{(a)}+\kappa\kappa'\lambda_S^{(\vw)}\right),
+        \end{aligned}
+    \end{equation}
+    which is true if
+    \begin{equation}\label{cond:m2}
+        m\geq\frac{\kappa'}{\kappa}\frac{1280\delta^{-1}d^3n^3\left(\log\frac{8m(d+1)}{\delta}\right)^{3/2}\sqrt{\RS(\vtheta^0)}}{\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)^2}.
+    \end{equation}
+\end{proof}
+\begin{rmk}
+    For the condition~\ref{cond:m1},
+    \begin{equation}
+        \begin{aligned}
+            \frac{1}{\kappa'}\frac{1}{\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)^2}
+             & =\frac{1}{\left(\lambda_S^{(a)}/\sqrt{\kappa'}+(\kappa')^{3/2}\lambda_S^{(\vw)}\right)^2}          \\
+             & \leq\frac{1}{\left(4\left(\frac{1}{27}(\lambda_S^{(a)})^3\lambda_S^{(\vw)}\right)^{1/4}\right) ^2} \\
+             & \leq\frac{1}{\lambda_S^2},
+        \end{aligned}
+    \end{equation}
+    and for the condition~\ref{cond:m2}
+    \begin{equation}
+        \begin{aligned}
+            \kappa'\frac{1}{\left(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)}\right)^2}
+             & =\frac{1}{\left(\lambda_S^{(a)}/(\kappa')^{3/2}+\sqrt{\kappa'}\lambda_S^{(\vw)}\right)^2}           \\
+             & \leq\frac{1}{\left(4\left(\frac{1}{27}\lambda_S^{(a)}()\lambda_S^{(\vw)})^3\right)^{1/4}\right) ^2} \\
+             & \leq\frac{1}{\lambda_S^2}.
+        \end{aligned}
+    \end{equation}
+    So all together it is sufficient to choose
+    \begin{equation}
+        m\kappa\geq\max\left\{\frac{128\sqrt{2}d^{5/2}n^2\log(8m(d+1)/\delta)\sqrt{\RS(\vtheta^0)}}{\lambda_S^2},\;\frac{1280\delta^{-1}d^3n^3\left(\log\frac{8m(d+1)}{\delta}\right)^{3/2}\sqrt{\RS(\vtheta^0)}}{\lambda_S^2}\right\}.
+    \end{equation}
+\end{rmk}
+
+Now let us discuss the case where $\kappa'=m^{\gamma'}$ and $\kappa=m^{-\gamma}$. Without loss of generality, we can set $\kappa'\geq 1$ and $\RS(\vtheta^0)=1$. Then Theorem~\ref{thm:main} implies that in order to achieve $\RS(\vtheta(T))\leq\eps$,
+\begin{equation}
+    T\leq\frac{|\log\eps|n}{m\kappa\kappa'(\lambda_S^{(a)}+\lambda_S^{(\vw)})}\leq\frac{|\log\eps|n}{m\kappa(\lambda_S^{(a)}/\kappa'+\kappa'\lambda_S^{(\vw)})}
+\end{equation}
+is sufficient. Note that when $m\kappa\kappa'\to+\infty$, $T\leq O(\frac{1}{m\kappa\kappa'})\to 0$. Similar result can be obtained if $\kappa'\leq 1$, $\RS(\vtheta^0)-1$ and $m\kappa/\kappa'=m^{1-\gamma-\gamma'}\to 0$
+
+Now consider $m\kappa'\gg 1$, $\kappa=m^{-\gamma}\ll m^{-1}$ and $m\kappa\kappa'=m^{1-\gamma+\gamma'}\ll 1$, recall that $f(\vx_i)\in[0,1]$ we can obtain the following results,
+\begin{thm}
+    Suppose that $\max\limits_{i\in[n]}f(\vx_i)\geq\frac{1}{2}$ and $1-\gamma\leq\gamma'\leq\gamma-1$, then for any $\delta\in(0,1)$ and $\eps\in(0,\frac{1}{32n})$, with probability at least $1-\delta$ over initialization, we have if at time $T$, $\RS(T)\leq\eps\RS(0)$ then
+    \begin{equation}
+        T=\Omega(|\log m\kappa|\max\{\kappa',1/\kappa'\}).
+    \end{equation}
+    In particular, $\lim T=+\infty$ as $m\kappa\max\{\kappa',1/\kappa'\}\to 0$.
+\end{thm}
+\begin{proof}
+    Without loss of generality, we assume $f(\vx_1)\geq\frac{1}{2}$ and $\RS(0)=1$ (see ASI),
+    \begin{equation}
+        t^*=\inf\left\{t\mid \sum_{k=1}^m\left(\kappa' a_k(t)^2 + \frac{1}{\kappa'}\norm{\vw_k(t)}_2^2\right)\geq\frac{1}{2\sqrt{d}}\right\}.
+    \end{equation}
+    Then we first claim that $t^*\leq T$. Since if not, that is, $T<t*$ then
+    \begin{equation}
+        \begin{aligned}
+            \frac{1}{2}
+             & >\sqrt{d}\sum_{k=1}^m\left(\kappa' a_k(T)^2+\frac{1}{\kappa'}\norm{\vw_k(T)}^2_2\right) \\
+             & \geq 2\sqrt{d}\sum_{k=1}^m|a_k(T)|\norm{\vw_k(T)}_2                                     \\
+             & \geq 2|f(\vx_1;\vtheta(T))|                                                             \\
+             & \geq 2\left(|f(\vx_1|-|f(\vx_1;\vtheta(T))-f(\vx_1)|\right)                             \\
+             & \geq 2(\frac{1}{2}-\sqrt{2n\RS(\vtheta(T))})                                            \\
+             & \geq 2(\frac{1}{2}-\sqrt{2n\eps})                                                       \\
+             & \geq 2(\frac{1}{2}-\frac{1}{4})                                                         \\
+             & =\frac{1}{2},
+        \end{aligned}
+    \end{equation}
+    which has a contradiction.
+\end{proof}
+
+\end{document}
